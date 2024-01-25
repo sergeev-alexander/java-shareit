@@ -19,7 +19,7 @@ import java.util.Collection;
 @Validated
 public class ItemController {
 
-    private final static String HEADER = "X-Sharer-User-Id";
+    private final String HEADER = "X-Sharer-User-Id";
     private final ItemServiceImplementation itemService;
     private final UserServiceImplementation userService;
     private final UserMapper userMapper;
