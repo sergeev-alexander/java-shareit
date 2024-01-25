@@ -19,40 +19,40 @@ import java.util.Collection;
 @Validated
 public class ItemController {
 
-    private final String HEADER = "X-Sharer-User-Id";
+    private final String header = "X-Sharer-User-Id";
     private final ItemServiceImplementation itemService;
     private final UserServiceImplementation userService;
     private final UserMapper userMapper;
 
     @GetMapping
-    public Collection<ItemDto> getAllOwnerItems(@RequestHeader(HEADER) @Positive Long ownerId) {
+    public Collection<ItemDto> getAllOwnerItems(@RequestHeader(header) @Positive Long ownerId) {
         userService.getUserById(ownerId);
         return itemService.getAllOwnerItems(ownerId);
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getItemById(@RequestHeader(HEADER) @Positive Long ownerId,
+    public ItemDto getItemById(@RequestHeader(header) @Positive Long ownerId,
                                     @PathVariable @Positive Long itemId) {
         userService.getUserById(ownerId);
         return itemService.getItemById(itemId);
     }
 
     @GetMapping("/search")
-    public Collection<ItemDto> getItemsBySearch(@RequestHeader(HEADER) @Positive Long ownerId,
+    public Collection<ItemDto> getItemsBySearch(@RequestHeader(header) @Positive Long ownerId,
                                                 @RequestParam String text) {
         userService.getUserById(ownerId);
         return itemService.getItemsBySearch(ownerId, text);
     }
 
     @PostMapping
-    public ItemDto postItem(@RequestHeader(HEADER) @Positive Long ownerId,
+    public ItemDto postItem(@RequestHeader(header) @Positive Long ownerId,
                             @RequestBody @Valid Item item) {
         item.setOwner(userMapper.mapDtoToUser(userService.getUserById(ownerId)));
         return itemService.postItem(ownerId, item);
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto patchItemById(@RequestHeader(HEADER) @Positive Long ownerId,
+    public ItemDto patchItemById(@RequestHeader(header) @Positive Long ownerId,
                                  @PathVariable @Positive Long itemId,
                                  @RequestBody Item item) {
         item.setOwner(userMapper.mapDtoToUser(userService.getUserById(ownerId)));
@@ -60,7 +60,7 @@ public class ItemController {
     }
 
     @DeleteMapping("/{itemId}")
-    public void deleteItemById(@RequestHeader(HEADER) @Positive Long ownerId,
+    public void deleteItemById(@RequestHeader(header) @Positive Long ownerId,
                                @PathVariable @Positive Long itemId) {
         userService.getUserById(ownerId);
         itemService.deleteItemById(ownerId, itemId);
