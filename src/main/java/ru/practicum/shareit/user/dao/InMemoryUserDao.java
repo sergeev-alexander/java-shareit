@@ -8,7 +8,6 @@ import javax.validation.ValidationException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Repository
 public class InMemoryUserDao implements UserDao {
@@ -24,15 +23,16 @@ public class InMemoryUserDao implements UserDao {
 
     @Override
     public User getUserById(Long userId) {
-        return Optional.ofNullable(userMap.get(userId))
-                .orElseThrow(() -> new NotFoundException("There's no user with id " + userId));
+        User user = userMap.get(userId);
+        if (null == user) {
+            throw new NotFoundException("There's no user with id " + userId);
+        }
+        return user;
     }
 
     @Override
     public User postUser(User user) {
-        if (getAllUsers().stream().map(User::getEmail).anyMatch(str -> str.equals(user.getEmail()))) {
-            throw new ValidationException("User email already exists!");
-        }
+        emailDuplicationCheck(user);
         user.setId(generateUserId());
         userMap.put(user.getId(), user);
         return user;
@@ -44,15 +44,12 @@ public class InMemoryUserDao implements UserDao {
         if (null != user.getEmail()
                 && !user.getEmail().equals(updatingUser.getEmail())
                 && !user.getEmail().isBlank()) {
-            if (getAllUsers().stream().map(User::getEmail).anyMatch(str -> str.equals(user.getEmail()))) {
-                throw new ValidationException("User email already exists!");
-            }
+            emailDuplicationCheck(user);
             updatingUser.setEmail(user.getEmail());
         }
         if (null != user.getName() && !user.getName().isBlank()) {
             updatingUser.setName(user.getName());
         }
-        userMap.put(userId, updatingUser);
         return updatingUser;
     }
 
@@ -60,6 +57,14 @@ public class InMemoryUserDao implements UserDao {
     public void deleteUserById(Long userId) {
         getUserById(userId);
         userMap.remove(userId);
+    }
+
+    private void emailDuplicationCheck(User user) {
+        if (getAllUsers().stream()
+                .map(User::getEmail)
+                .anyMatch(str -> str.equals(user.getEmail()))) {
+            throw new ValidationException("User email already exists!");
+        }
     }
 
     private Long generateUserId() {

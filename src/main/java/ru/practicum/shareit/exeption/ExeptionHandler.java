@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,20 +31,38 @@ public class ExeptionHandler {
     }
 
     @ExceptionHandler(ValidationException.class)
-    public ResponseEntity<String> constraintViolationHandle(ValidationException e) {
+    public ResponseEntity<String> validatoinHandle(ValidationException e) {
         log.error("{} : {}", e.getClass().getSimpleName(), e.getMessage());
-        return new ResponseEntity<>(e.getClass().getSimpleName() + e.getMessage(), HttpStatus.CONFLICT);
+        return new ResponseEntity<>(e.getClass().getSimpleName() + " : " + e.getMessage(),
+                HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<String> costraintViolationHandle(ConstraintViolationException e) {
+        log.error("{} : {}", e.getClass().getSimpleName(), e.getMessage());
+        return new ResponseEntity<>(e.getClass().getSimpleName() + " : " + e.getMessage(),
+                HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<String> notFoundHandle(NotFoundException e) {
         log.error("{} : {}", e.getClass().getSimpleName(), e.getMessage());
-        return new ResponseEntity<>(e.getClass().getSimpleName() + e.getMessage(), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(e.getClass().getSimpleName() + " : " + e.getMessage(),
+                HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(MissingRequestHeaderException.class)
     public ResponseEntity<String> notFoundHandle(MissingRequestHeaderException e) {
         log.error("{} : {}", e.getClass().getSimpleName(), e.getMessage());
-        return new ResponseEntity<>(e.getClass().getSimpleName() + e.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(e.getClass().getSimpleName() + " : " + e.getMessage(),
+                HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(Throwable.class)
+    public ResponseEntity<String> throwableHandle(Throwable e) {
+        log.error("{} : {}", e.getClass().getSimpleName(), e.getMessage());
+        return new ResponseEntity<>(e.getClass().getSimpleName() + " : " + e.getMessage(),
+                HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 }
