@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl {
+public class UserServiceImpl implements UserService {
 
     private final UserDao userDao;
     private final ItemDao itemDao;
@@ -24,18 +24,22 @@ public class UserServiceImpl {
                 .collect(Collectors.toList());
     }
 
+    @Override
     public UserDto getUserById(Long userId) {
         return userMapper.mapUserToDto(userDao.getUserById(userId));
     }
 
+    @Override
     public UserDto postUser(UserDto userDto) {
         return userMapper.mapUserToDto(userDao.postUser(userMapper.mapDtoToUser(userDto)));
     }
 
+    @Override
     public UserDto patchUserById(Long userId, UserDto userDto) {
         return userMapper.mapUserToDto(userDao.patchUserById(userId, userMapper.mapDtoToUser(userDto)));
     }
 
+    @Override
     public void deleteUserById(Long userId) {
         itemDao.deleteAllOwnerItems(userId);
         userDao.deleteUserById(userId);
