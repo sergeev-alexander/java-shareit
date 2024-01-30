@@ -21,7 +21,7 @@ public class ItemDto {
     @NotBlank(groups = ValidationMarker.OnCreate.class, message = "Creating item description field is blank!")
     private String description;
 
-    @NotNull(message = "Creating item available field is null!")
+    @NotNull(groups = ValidationMarker.OnCreate.class, message = "Creating item available field is null!")
     private Boolean available;
 
 }

@@ -19,14 +19,14 @@ import java.util.Map;
 @RestControllerAdvice
 public class ExeptionHandler {
 
-    @ExceptionHandler({MethodArgumentNotValidException.class})
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> validationHendle(MethodArgumentNotValidException e) {
+    public Map<String, String> methodArgumentNotValidHendle(MethodArgumentNotValidException e) {
         Map<String, String> response = new HashMap<>();
         for (FieldError error : e.getBindingResult().getFieldErrors()) {
             response.put(error.getField(), error.getDefaultMessage());
+            log.error("Validation error in field {}", response.entrySet());
         }
-        log.error("Validation error: {}", response.entrySet());
         return response;
     }
 
@@ -37,13 +37,6 @@ public class ExeptionHandler {
                 HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<String> costraintViolationHandle(ConstraintViolationException e) {
-        log.error("{} : {}", e.getClass().getSimpleName(), e.getMessage());
-        return new ResponseEntity<>(e.getClass().getSimpleName() + " : " + e.getMessage(),
-                HttpStatus.BAD_REQUEST);
-    }
-
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<String> notFoundHandle(NotFoundException e) {
         log.error("{} : {}", e.getClass().getSimpleName(), e.getMessage());
@@ -51,8 +44,10 @@ public class ExeptionHandler {
                 HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(MissingRequestHeaderException.class)
-    public ResponseEntity<String> notFoundHandle(MissingRequestHeaderException e) {
+    @ExceptionHandler({
+            MissingRequestHeaderException.class,
+            ConstraintViolationException.class,})
+    public ResponseEntity<String> exceptionHandle(Exception e) {
         log.error("{} : {}", e.getClass().getSimpleName(), e.getMessage());
         return new ResponseEntity<>(e.getClass().getSimpleName() + " : " + e.getMessage(),
                 HttpStatus.BAD_REQUEST);

@@ -7,7 +7,6 @@ import ru.practicum.shareit.exeption.ValidationMarker;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemServiceImpl;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.util.Collection;
 
@@ -27,7 +26,7 @@ public class ItemController {
 
     @GetMapping("/{itemId}")
     public ItemDto getItemById(@RequestHeader(header) @Positive Long ownerId,
-                                    @PathVariable @Positive Long itemId) {
+                               @PathVariable @Positive Long itemId) {
         return itemService.getItemById(ownerId, itemId);
     }
 
@@ -37,10 +36,9 @@ public class ItemController {
         return itemService.getItemsBySearch(ownerId, text);
     }
 
-    @Validated(ValidationMarker.OnCreate.class)
     @PostMapping
     public ItemDto postItem(@RequestHeader(header) @Positive Long ownerId,
-                            @RequestBody @Valid ItemDto itemDto) {
+                            @RequestBody @Validated(ValidationMarker.OnCreate.class) ItemDto itemDto) {
         return itemService.postItem(ownerId, itemDto);
     }
 

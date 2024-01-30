@@ -17,7 +17,7 @@ public class InMemoryItemDao implements ItemDao {
 
     @Override
     public Collection<Item> getAllOwnerItems(Long ownerId) {
-        return ownerItemMap.computeIfAbsent(ownerId, k -> new ArrayList<>());
+        return ownerItemMap.getOrDefault(ownerId, List.of());
     }
 
     @Override
@@ -33,9 +33,9 @@ public class InMemoryItemDao implements ItemDao {
     public Collection<Item> getItemsBySearch(Long ownerId, String text) {
         final String searchTextLowerCase = text.toLowerCase();
         return itemMap.values().stream()
-                .filter(Item::getAvailable)
-                .filter(item -> item.getName().toLowerCase().contains(searchTextLowerCase)
-                        || item.getDescription().toLowerCase().contains(searchTextLowerCase))
+                .filter(item -> item.getAvailable() &&
+                        (item.getName().toLowerCase().contains(searchTextLowerCase)
+                                || item.getDescription().toLowerCase().contains(searchTextLowerCase)))
                 .distinct()
                 .collect(Collectors.toList());
     }
@@ -75,9 +75,9 @@ public class InMemoryItemDao implements ItemDao {
 
     @Override
     public void deleteAllOwnerItems(Long ownerId) {
-        ownerItemMap.remove(ownerId);
         getAllOwnerItems(ownerId).stream()
                 .peek(item -> itemMap.remove(item.getId()));
+        ownerItemMap.remove(ownerId);
     }
 
     private Long generateItemId() {

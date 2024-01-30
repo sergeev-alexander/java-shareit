@@ -19,7 +19,7 @@ public class UserDto {
     private String name;
 
     @NotBlank(groups = ValidationMarker.OnCreate.class, message = "Email field is blank!")
-    @Email(message = "Wrong email format!")
+    @Email(groups = {ValidationMarker.OnCreate.class, ValidationMarker.OnUpdate.class}, message = "Wrong email format!")
     private String email;
 
 }
