@@ -1,3 +1,13 @@
+DROP TABLE IF EXISTS
+users,
+requests,
+items,
+bookings,
+comments;
+
+DROP TYPE IF EXISTS
+booking_status;
+
 CREATE TYPE IF NOT EXISTS booking_status AS ENUM
 (
 'WAITING',
@@ -26,8 +36,8 @@ CREATE TABLE IF NOT EXISTS items
     name            VARCHAR(128)    NOT NULL,
     description     VARCHAR(128)    NOT NULL,
     available       BOOLEAN         DEFAULT TRUE NOT NULL,
-    owner_id        BIGINT          REFERENCES users(id),
-    request_id      BIGINT          REFERENCES requests(id)
+    owner_id        BIGINT          REFERENCES users(id) ON DELETE CASCADE,
+    request_id      BIGINT          REFERENCES requests(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS bookings
@@ -35,8 +45,8 @@ CREATE TABLE IF NOT EXISTS bookings
     id              BIGINT          GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     start_date      TIMESTAMP       NOT NULL,
     end_date        TIMESTAMP       NOT NULL,
-    item_id         BIGINT          REFERENCES items(id),
-    booker_id       BIGINT          REFERENCES users(id),
+    item_id         BIGINT          REFERENCES items(id) ON DELETE CASCADE,
+    booker_id       BIGINT          REFERENCES users(id) ON DELETE CASCADE,
     status          booking_status  NOT NULL
 );
 
@@ -44,7 +54,7 @@ CREATE TABLE IF NOT EXISTS comments
 (
     id              BIGINT          GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     text            VARCHAR(128)    NOT NULL,
-    item_id         BIGINT          REFERENCES items(id),
-    author_id       BIGINT          REFERENCES users(id),
+    item_id         BIGINT          REFERENCES items(id) ON DELETE CASCADE,
+    author_id       BIGINT          REFERENCES users(id) ON DELETE CASCADE,
     created         TIMESTAMP       NOT NULL
 );
