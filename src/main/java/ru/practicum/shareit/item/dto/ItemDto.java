@@ -7,6 +7,7 @@ import ru.practicum.shareit.exeption.ValidationMarker;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -23,5 +24,21 @@ public class ItemDto {
 
     @NotNull(groups = ValidationMarker.OnCreate.class, message = "Creating item available field is null!")
     private Boolean available;
+
+    private BookingDto lastBooking;
+
+    private BookingDto nextBooking;
+
+    private List<CommentDto> comments;
+
+    @Data
+    @AllArgsConstructor
+    public static class BookingDto {
+
+        Long id;
+
+        Long bookerId;
+
+    }
 
 }

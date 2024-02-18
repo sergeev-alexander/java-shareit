@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exeption.ValidationMarker;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
@@ -27,19 +28,26 @@ public class ItemController {
     @GetMapping("/{itemId}")
     public ItemDto getItemById(@RequestHeader(header) @Positive Long ownerId,
                                @PathVariable @Positive Long itemId) {
-        return itemService.getItemById(ownerId, itemId);
+        return itemService.getItemDtoById(ownerId, itemId);
     }
 
     @GetMapping("/search")
-    public Collection<ItemDto> getItemsBySearch(@RequestHeader(header) @Positive Long ownerId,
+    public Collection<ItemDto> getItemsBySearch(@RequestHeader(header) @Positive Long userId,
                                                 @RequestParam String text) {
-        return itemService.getItemsBySearch(ownerId, text);
+        return itemService.getItemsBySearch(userId, text);
     }
 
     @PostMapping
     public ItemDto postItem(@RequestHeader(header) @Positive Long ownerId,
                             @RequestBody @Validated(ValidationMarker.OnCreate.class) ItemDto itemDto) {
         return itemService.postItem(ownerId, itemDto);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDto postComment(@RequestHeader(header) @Positive Long authorId,
+                                  @PathVariable @Positive Long itemId,
+                                  @RequestBody @Validated(ValidationMarker.OnCreate.class) CommentDto commentDto) {
+        return itemService.postComment(authorId, itemId, commentDto);
     }
 
     @PatchMapping("/{itemId}")

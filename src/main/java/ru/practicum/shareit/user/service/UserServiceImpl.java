@@ -2,47 +2,56 @@ package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.item.dao.ItemDao;
-import ru.practicum.shareit.user.dao.UserDao;
+import ru.practicum.shareit.exeption.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
+import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final UserDao userDao;
-    private final ItemDao itemDao;
+    private final UserRepository userRepository;
     private final UserMapper userMapper;
 
     public Collection<UserDto> getAllUsers() {
-        return userDao.getAllUsers().stream()
-                .map(userMapper::mapUserToDto)
-                .collect(Collectors.toList());
+        return userRepository.findBy(UserDto.class);
     }
 
     @Override
-    public UserDto getUserById(Long userId) {
-        return userMapper.mapUserToDto(userDao.getUserById(userId));
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId, User.class)
+                .orElseThrow(() -> new NotFoundException("There's no user with id " + userId));
+    }
+
+    public UserDto getUserDtoById(Long userId) {
+        return userRepository.findById(userId, UserDto.class)
+                .orElseThrow(() -> new NotFoundException("There's no user with id " + userId));
     }
 
     @Override
     public UserDto postUser(UserDto userDto) {
-        return userMapper.mapUserToDto(userDao.postUser(userMapper.mapDtoToUser(userDto)));
+        return userMapper.mapUserToDto(userRepository.save(userMapper.mapDtoToUser(userDto)));
     }
 
     @Override
     public UserDto patchUserById(Long userId, UserDto userDto) {
-        return userMapper.mapUserToDto(userDao.patchUserById(userId, userMapper.mapDtoToUser(userDto)));
+        User updatingUser = getUserById(userId);
+        if (null != userDto.getName()) {
+            updatingUser.setName(userDto.getName());
+        }
+        if (null != userDto.getEmail()) {
+            updatingUser.setEmail(userDto.getEmail());
+        }
+        return userMapper.mapUserToDto(userRepository.save(updatingUser));
     }
 
     @Override
     public void deleteUserById(Long userId) {
-        itemDao.deleteAllOwnerItems(userId);
-        userDao.deleteUserById(userId);
+        userRepository.deleteById(userId);
     }
 
 }

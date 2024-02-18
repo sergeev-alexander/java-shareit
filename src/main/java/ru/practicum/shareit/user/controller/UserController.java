@@ -25,17 +25,17 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public UserDto getUserById(@PathVariable @Positive Long userId) {
-        return userService.getUserById(userId);
+        return userService.getUserDtoById(userId);
     }
 
     @PostMapping
-    public UserDto postUser(@RequestBody @Validated({ValidationMarker.OnCreate.class}) UserDto userDto) {
+    public UserDto postUser(@RequestBody @Validated(ValidationMarker.OnCreate.class) UserDto userDto) {
         return userService.postUser(userDto);
     }
 
     @PatchMapping("/{userId}")
     public UserDto patchUserById(@PathVariable @Positive Long userId,
-                                 @RequestBody @Validated({ValidationMarker.OnUpdate.class}) UserDto userDto) {
+                                 @RequestBody @Validated(ValidationMarker.OnUpdate.class) UserDto userDto) {
         return userService.patchUserById(userId, userDto);
     }
 
