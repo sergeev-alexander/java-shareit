@@ -8,8 +8,10 @@ import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
+import javax.transaction.Transactional;
 import java.util.Collection;
 
+@Transactional
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
