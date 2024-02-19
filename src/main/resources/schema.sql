@@ -23,21 +23,13 @@ CREATE TABLE IF NOT EXISTS users
     email           VARCHAR(128)    UNIQUE NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS requests
-(
-    id              BIGINT          GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    description     VARCHAR(128)    NOT NULL,
-    requester_id    BIGINT          REFERENCES users(id)
-);
-
 CREATE TABLE IF NOT EXISTS items
 (
     id              BIGINT          GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name            VARCHAR(128)    NOT NULL,
     description     VARCHAR(128)    NOT NULL,
     available       BOOLEAN         DEFAULT TRUE NOT NULL,
-    owner_id        BIGINT          REFERENCES users(id) ON DELETE CASCADE,
-    request_id      BIGINT          REFERENCES requests(id) ON DELETE CASCADE
+    owner_id        BIGINT          REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS bookings

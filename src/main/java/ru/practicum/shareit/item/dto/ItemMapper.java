@@ -25,7 +25,6 @@ public class ItemMapper {
                 itemDto.getName(),
                 itemDto.getDescription(),
                 itemDto.getAvailable(),
-                null,
                 null);
     }
 
