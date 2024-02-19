@@ -31,7 +31,7 @@ public class ItemController {
     @GetMapping("/{itemId}")
     public ItemDto getItemById(@RequestHeader(header) @Positive Long ownerId,
                                @PathVariable @Positive Long itemId) {
-        log.info("\nGET /items/{}\n{} {}\n",itemId ,header, ownerId);
+        log.info("\nGET /items/{}\n{} {}\n", itemId, header, ownerId);
         return itemService.getItemDtoById(ownerId, itemId);
     }
 
