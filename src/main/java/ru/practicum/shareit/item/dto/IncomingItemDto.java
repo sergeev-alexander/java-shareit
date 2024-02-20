@@ -6,39 +6,23 @@ import ru.practicum.shareit.exeption.ValidationMarker;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
-import java.util.List;
+import javax.validation.constraints.Size;
 
 @Data
 @AllArgsConstructor
-public class ItemDto {
-
-    @Null(groups = ValidationMarker.OnCreate.class, message = "Creating item already has an id!")
-    private Long id;
+public class IncomingItemDto {
 
     @NotBlank(groups = ValidationMarker.OnCreate.class, message = "Creating item name field is blank!")
+    @Size(groups = ValidationMarker.OnCreate.class, max = 128,
+            message = "Creating item name field is bigger than 128 characters!")
     private String name;
 
     @NotBlank(groups = ValidationMarker.OnCreate.class, message = "Creating item description field is blank!")
+    @Size(groups = ValidationMarker.OnCreate.class, max = 128,
+            message = "Creating item name field is bigger than 128 characters!")
     private String description;
 
     @NotNull(groups = ValidationMarker.OnCreate.class, message = "Creating item available field is null!")
     private Boolean available;
-
-    private BookingDto lastBooking;
-
-    private BookingDto nextBooking;
-
-    private List<CommentDto> comments;
-
-    @Data
-    @AllArgsConstructor
-    public static class BookingDto {
-
-        Long id;
-
-        Long bookerId;
-
-    }
 
 }

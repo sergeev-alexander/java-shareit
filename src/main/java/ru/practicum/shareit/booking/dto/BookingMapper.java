@@ -27,4 +27,10 @@ public class BookingMapper {
                 BookingStatus.WAITING);
     }
 
+    public LastNextBookingDto mapBookingToLastNextDto(Booking booking) {
+        return new LastNextBookingDto(
+                booking.getId(),
+                booking.getBooker().getId());
+    }
+
 }

@@ -8,18 +8,18 @@ import java.time.LocalDateTime;
 @Component
 public class CommentMapper {
 
-    public CommentDto mapCommentToDto(Comment comment) {
-        return new CommentDto(
+    public OutgoingCommentDto mapCommentToOutgoingDto(Comment comment) {
+        return new OutgoingCommentDto(
                 comment.getId(),
                 comment.getText(),
                 comment.getAuthor().getName(),
                 comment.getCreated());
     }
 
-    public Comment mapDtoToComment(CommentDto commentDto) {
+    public Comment mapIncommingDtoToComment(IncomingCommentDto incomingCommentDto) {
         return new Comment(
                 null,
-                commentDto.getText(),
+                incomingCommentDto.getText(),
                 null,
                 null,
                 LocalDateTime.now());

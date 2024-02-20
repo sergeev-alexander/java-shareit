@@ -8,8 +8,8 @@ import java.util.List;
 @Component
 public class ItemMapper {
 
-    public ItemDto mapItemToDto(Item item) {
-        return new ItemDto(
+    public OutgoingItemDto mapItemToOutgoingDto(Item item) {
+        return new OutgoingItemDto(
                 item.getId(),
                 item.getName(),
                 item.getDescription(),
@@ -19,12 +19,12 @@ public class ItemMapper {
                 List.of());
     }
 
-    public Item mapDtoToItem(ItemDto itemDto) {
+    public Item mapIncomingDtoToItem(IncomingItemDto incomingItemDto) {
         return new Item(
-                itemDto.getId(),
-                itemDto.getName(),
-                itemDto.getDescription(),
-                itemDto.getAvailable(),
+                null,
+                incomingItemDto.getName(),
+                incomingItemDto.getDescription(),
+                incomingItemDto.getAvailable(),
                 null);
     }
 

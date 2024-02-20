@@ -37,7 +37,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Collection<OutgoingBookingDto> getAllUserBookings(Long bookerId, BookingState bookingState) {
-        getUserById(bookerId);
+        userRepository.checkUserById(bookerId);
         switch (bookingState) {
             case ALL:
                 return bookingRepository.findByBookerId(bookerId, sortByStartDesc, OutgoingBookingDto.class);
@@ -72,7 +72,7 @@ public class BookingServiceImpl implements BookingService {
                 .collect(Collectors.toList());
         switch (bookingState) {
             case ALL:
-                return bookingRepository.findByItemIdIn(ownerItemIdList, sortByStartDesc);
+                return bookingRepository.findByItemIdIn(ownerItemIdList, sortByStartDesc, OutgoingBookingDto.class);
             case CURRENT:
                 return bookingRepository.findByItemIdInAndStartIsBeforeAndEndIsAfter(ownerItemIdList,
                         LocalDateTime.now(), LocalDateTime.now(), sortByStartDesc);
@@ -105,8 +105,8 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public OutgoingBookingDto postBooking(Long bookerId, IncomingBookingDto incomingBookingDto) {
-        User booker = getUserById(bookerId);
-        Item item = getItemById(incomingBookingDto.getItemId());
+        User booker = userRepository.getUserById(bookerId);
+        Item item = itemRepository.getItemById(incomingBookingDto.getItemId());
         if (item.getOwner().getId().equals(bookerId))
             throw new NotFoundException("Booking item belongs to booker!");
         if (!item.getAvailable()) {
@@ -133,16 +133,6 @@ public class BookingServiceImpl implements BookingService {
     private <T> T getBookingById(Long bookingId, Class<T> projectionClass) {
         return bookingRepository.findById(bookingId, projectionClass)
                 .orElseThrow(() -> new NotFoundException("There's no booking with id " + bookingId));
-    }
-
-    private Item getItemById(Long itemId) {
-        return itemRepository.findById(itemId)
-                .orElseThrow(() -> new NotFoundException("There's no item with id " + itemId));
-    }
-
-    private User getUserById(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("There's no user with id " + userId));
     }
 
 }

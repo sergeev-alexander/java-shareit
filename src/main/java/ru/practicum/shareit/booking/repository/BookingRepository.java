@@ -2,10 +2,10 @@ package ru.practicum.shareit.booking.repository;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import ru.practicum.shareit.booking.dto.LastNextBookingDto;
 import ru.practicum.shareit.booking.dto.OutgoingBookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
-import ru.practicum.shareit.item.dto.ItemDto;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -37,8 +37,9 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
                                                        BookingStatus status,
                                                        Sort sort);
 
-    List<OutgoingBookingDto> findByItemIdIn(Collection<Long> ownerItemsIdList,
-                                            Sort sort);
+    <T> List<T> findByItemIdIn(Collection<Long> ownerItemsIdList,
+                               Sort sort,
+                               Class<T> projectionClass);
 
     List<OutgoingBookingDto> findByItemIdInAndStartIsBeforeAndEndIsAfter(List<Long> ownerItemIdList,
                                                                          LocalDateTime now,
@@ -57,15 +58,15 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
                                                        BookingStatus status,
                                                        Sort sort);
 
-    List<ItemDto.BookingDto> findFirstByItemIdAndStartIsAfterAndStatusIs(Long itemId,
-                                                                         LocalDateTime now,
-                                                                         BookingStatus bookingStatus,
-                                                                         Sort sort);
+    Optional<LastNextBookingDto> findFirstByItemIdAndStartIsAfterAndStatusIs(Long itemId,
+                                                                             LocalDateTime now,
+                                                                             BookingStatus bookingStatus,
+                                                                             Sort sort);
 
-    List<ItemDto.BookingDto> findByItemIdAndStartIsBeforeAndStatusIs(Long itemId,
-                                                                     LocalDateTime now,
-                                                                     BookingStatus bookingStatus,
-                                                                     Sort sort);
+    Optional<LastNextBookingDto> findFirstByItemIdAndStartIsBeforeAndStatusIs(Long itemId,
+                                                                              LocalDateTime now,
+                                                                              BookingStatus bookingStatus,
+                                                                              Sort sort);
 
     List<Booking> findByBookerIdAndItemIdAndEndIsBeforeAndStatusIs(Long authorId,
                                                                    Long itemId,

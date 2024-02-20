@@ -1,23 +1,25 @@
 package ru.practicum.shareit.item.service;
 
-import ru.practicum.shareit.item.dto.CommentDto;
-import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.IncomingCommentDto;
+import ru.practicum.shareit.item.dto.IncomingItemDto;
+import ru.practicum.shareit.item.dto.OutgoingCommentDto;
+import ru.practicum.shareit.item.dto.OutgoingItemDto;
 
 import java.util.Collection;
 
 public interface ItemService {
 
-    Collection<ItemDto> getAllOwnerItems(Long ownerId);
+    Collection<OutgoingItemDto> getAllOwnerItems(Long ownerId);
 
-    ItemDto getItemDtoById(Long userId, Long itemId);
+    OutgoingItemDto getItemDtoById(Long userId, Long itemId);
 
-    Collection<ItemDto> getItemsBySearch(Long userId, String text);
+    Collection<OutgoingItemDto> getItemsBySearch(Long userId, String text);
 
-    ItemDto postItem(Long ownerId, ItemDto itemDto);
+    OutgoingItemDto postItem(Long ownerId, IncomingItemDto incomingItemDto);
 
-    CommentDto postComment(Long authorId, Long itemId, CommentDto commentDto);
+    OutgoingCommentDto postComment(Long authorId, Long itemId, IncomingCommentDto incomingCommentDto);
 
-    ItemDto patchItemById(Long ownerId, Long itemId, ItemDto itemDto);
+    OutgoingItemDto patchItemById(Long ownerId, Long itemId, IncomingItemDto incomingItemDto);
 
     void deleteItemById(Long ownerId, Long itemId);
 

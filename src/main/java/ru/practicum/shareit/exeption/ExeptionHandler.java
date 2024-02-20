@@ -62,15 +62,9 @@ public class ExeptionHandler {
 
     @ExceptionHandler({
             MissingRequestHeaderException.class,
-            NotAvailableItemException.class})
+            NotAvailableItemException.class,
+            SQLException.class})
     public ResponseEntity<String> exceptionHandle(Exception e) {
-        log.error("{} : {}", e.getClass().getSimpleName(), e.getMessage());
-        return new ResponseEntity<>(e.getClass().getSimpleName() + " : " + e.getMessage(),
-                HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<String> sqlExceptionHandle(Exception e) {
         log.error("{} : {}", e.getClass().getSimpleName(), e.getMessage());
         return new ResponseEntity<>(e.getClass().getSimpleName() + " : " + e.getMessage(),
                 HttpStatus.BAD_REQUEST);

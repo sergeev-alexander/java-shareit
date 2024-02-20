@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import ru.practicum.shareit.exeption.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
@@ -17,5 +18,9 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     Optional<Item> findByIdAndOwnerId(Long itemId, Long ownerId);
 
     void deleteByOwner(Long ownerId);
+
+    default Item getItemById(Long itemId) {
+        return findById(itemId).orElseThrow(() -> new NotFoundException("There's no item with id " + itemId));
+    }
 
 }
