@@ -42,10 +42,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto patchUserById(Long userId, UserDto userDto) {
         User updatingUser = getUserById(userId);
-        if (null != userDto.getName() && userDto.getName().isBlank()) {
+        if (null != userDto.getName() && !userDto.getName().isBlank()) {
             updatingUser.setName(userDto.getName());
         }
-        if (null != userDto.getEmail() && userDto.getEmail().isBlank()) {
+        if (null != userDto.getEmail() && !userDto.getEmail().isBlank()) {
             updatingUser.setEmail(userDto.getEmail());
         }
         return userMapper.mapUserToDto(userRepository.save(updatingUser));
