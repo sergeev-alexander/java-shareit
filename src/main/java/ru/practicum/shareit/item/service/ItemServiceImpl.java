@@ -137,7 +137,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     private ItemDto.BookingDto getNextBookingByItemId(Long itemId) {
-        return bookingRepository.findByItemIdAndStartIsAfterAndStatusIs(itemId, LocalDateTime.now(),
+        return bookingRepository.findFirstByItemIdAndStartIsAfterAndStatusIs(itemId, LocalDateTime.now(),
                         BookingStatus.APPROVED, Sort.by(Sort.Direction.ASC, "start"))
                 .stream()
                 .findFirst()
