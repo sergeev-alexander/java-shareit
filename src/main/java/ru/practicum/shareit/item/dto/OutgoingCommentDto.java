@@ -17,6 +17,6 @@ public class OutgoingCommentDto {
 
     private String authorName;
 
-    private LocalDateTime created = LocalDateTime.now();
+    private LocalDateTime created;
 
 }

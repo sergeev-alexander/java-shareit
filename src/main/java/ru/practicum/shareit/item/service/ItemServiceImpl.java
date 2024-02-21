@@ -21,8 +21,11 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 
 @Transactional
 @Service
@@ -39,40 +42,45 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Collection<OutgoingItemDto> getAllOwnerItems(Long ownerId) {
+        LocalDateTime now = LocalDateTime.now();
         userRepository.checkUserById(ownerId);
         List<OutgoingItemDto> outgoingItemDtoList = itemRepository.findByOwnerId(ownerId)
                 .stream()
                 .map(itemMapper::mapItemToOutgoingDto)
-                .collect(Collectors.toList());
+                .collect(toList());
         List<Long> itemIdList = outgoingItemDtoList
                 .stream()
                 .map(OutgoingItemDto::getId)
-                .collect(Collectors.toList());
-        List<Comment> commentList = commentRepository.findByItemIdIn(itemIdList);
-        List<Booking> bookingList = bookingRepository
-                .findByItemIdIn(itemIdList, Sort.by(Sort.Direction.ASC, "start"), Booking.class);
+                .collect(toList());
+        Map<Long, List<Comment>> commentMap = commentRepository.findByItemIdIn(itemIdList)
+                .stream()
+                .collect(groupingBy(comment -> comment.getItem().getId(), toList()));
+        Map<Long, List<Booking>> bookingMap = bookingRepository
+                .findByItemIdIn(itemIdList, Sort.by(Sort.Direction.ASC, "start"), Booking.class)
+                .stream()
+                .collect(groupingBy(booking -> booking.getItem().getId(), toList()));
         return outgoingItemDtoList
                 .stream()
-                .peek(outgoingItemDto -> outgoingItemDto.setComments(commentList
-                        .stream()
-                        .filter(comment -> comment.getItem().getId().equals(outgoingItemDto.getId()))
-                        .map(commentMapper::mapCommentToOutgoingDto)
-                        .collect(Collectors.toList())))
-                .peek(outgoingItemDto -> outgoingItemDto.setLastBooking(bookingList
-                        .stream()
-                        .filter(booking -> booking.getItem().getId().equals(outgoingItemDto.getId())
-                                && booking.getStart().isBefore(LocalDateTime.now()))
-                        .map(bookingMapper::mapBookingToLastNextDto)
-                        .reduce((booking1, booking2) -> booking2)
-                        .orElse(null)))
-                .peek(outgoingItemDto -> outgoingItemDto.setNextBooking(bookingList
-                        .stream()
-                        .filter(booking -> booking.getItem().getId().equals(outgoingItemDto.getId())
-                                && booking.getStart().isAfter(LocalDateTime.now()))
-                        .map(bookingMapper::mapBookingToLastNextDto)
-                        .findFirst()
-                        .orElse(null)))
-                .collect(Collectors.toList());
+                .peek(outgoingItemDto -> outgoingItemDto
+                        .setComments(commentMap.getOrDefault(outgoingItemDto.getId(), List.of())
+                                .stream()
+                                .map(commentMapper::mapCommentToOutgoingDto)
+                                .collect(toList())))
+                .peek(outgoingItemDto -> outgoingItemDto
+                        .setLastBooking(bookingMap.getOrDefault(outgoingItemDto.getId(), List.of())
+                                .stream()
+                                .filter(booking -> !booking.getStart().isAfter(now))
+                                .map(bookingMapper::mapBookingToLastNextDto)
+                                .reduce((booking1, booking2) -> booking2)
+                                .orElse(null)))
+                .peek(outgoingItemDto -> outgoingItemDto
+                        .setNextBooking(bookingMap.getOrDefault(outgoingItemDto.getId(), List.of())
+                                .stream()
+                                .filter(booking -> booking.getStart().isAfter(now))
+                                .map(bookingMapper::mapBookingToLastNextDto)
+                                .findFirst()
+                                .orElse(null)))
+                .collect(toList());
     }
 
     @Override
@@ -97,19 +105,21 @@ public class ItemServiceImpl implements ItemService {
         List<Item> itemList =
                 itemRepository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailableIsTrue(
                         text, text);
-        List<Comment> commentList = commentRepository.findByItemIdIn(itemList
+        Map<Long, List<Comment>> commentMap = commentRepository.findByItemIdIn(itemList
+                        .stream()
+                        .map(Item::getId)
+                        .collect(toList()))
                 .stream()
-                .map(Item::getId)
-                .collect(Collectors.toList()));
+                .collect(groupingBy(comment -> comment.getItem().getId(), toList()));
         return itemList
                 .stream()
                 .map(itemMapper::mapItemToOutgoingDto)
-                .peek(outgoingItemDto -> outgoingItemDto.setComments(commentList
-                        .stream()
-                        .filter(comment -> comment.getItem().getId().equals(outgoingItemDto.getId()))
-                        .map(commentMapper::mapCommentToOutgoingDto)
-                        .collect(Collectors.toList())))
-                .collect(Collectors.toList());
+                .peek(outgoingItemDto -> outgoingItemDto
+                        .setComments(commentMap.getOrDefault(outgoingItemDto.getId(), List.of())
+                                .stream()
+                                .map(commentMapper::mapCommentToOutgoingDto)
+                                .collect(toList())))
+                .collect(toList());
     }
 
     @Override
@@ -121,12 +131,11 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public OutgoingCommentDto postComment(Long authorId, Long itemId, IncomingCommentDto incomingCommentDto) {
-        bookingRepository.findByBookerIdAndItemIdAndEndIsBeforeAndStatusIs(authorId,
-                        itemId, LocalDateTime.now(), BookingStatus.APPROVED)
-                .stream()
-                .findFirst()
-                .orElseThrow(() -> new NotAvailableItemException("Author with id " + authorId
-                        + " has no rights to leve a comment to item with id " + itemId + "!"));
+        if (!bookingRepository.existsByBookerIdAndItemIdAndEndIsBeforeAndStatusIs(authorId,
+                itemId, LocalDateTime.now(), BookingStatus.APPROVED)) {
+            throw new NotAvailableItemException("Author with id " + authorId
+                    + " has no rights to leve a comment to item with id " + itemId + "!");
+        }
         Comment comment = commentMapper.mapIncommingDtoToComment(incomingCommentDto);
         comment.setAuthor(userRepository.getUserById(authorId));
         comment.setItem(itemRepository.getItemById(itemId));
@@ -176,7 +185,7 @@ public class ItemServiceImpl implements ItemService {
     private List<OutgoingCommentDto> getCommentsByItemId(Long itemId) {
         return commentRepository.findByItemId(itemId).stream()
                 .map(commentMapper::mapCommentToOutgoingDto)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
 }

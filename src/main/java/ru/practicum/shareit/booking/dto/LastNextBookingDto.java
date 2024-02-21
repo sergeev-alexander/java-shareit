@@ -7,8 +7,8 @@ import lombok.Data;
 @AllArgsConstructor
 public class LastNextBookingDto {
 
-    Long id;
+    private Long id;
 
-    Long bookerId;
+    private Long bookerId;
 
 }

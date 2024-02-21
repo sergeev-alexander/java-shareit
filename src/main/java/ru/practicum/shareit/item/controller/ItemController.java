@@ -62,9 +62,10 @@ public class ItemController {
     }
 
     @PatchMapping("/{itemId}")
-    public OutgoingItemDto patchItemById(@RequestHeader(header) @Positive Long ownerId,
-                                         @PathVariable @Positive Long itemId,
-                                         @RequestBody IncomingItemDto incomingItemDto) {
+    public OutgoingItemDto patchItemById(
+            @RequestHeader(header) @Positive Long ownerId,
+            @PathVariable @Positive Long itemId,
+            @RequestBody @Validated(ValidationMarker.OnUpdate.class) IncomingItemDto incomingItemDto) {
         log.info("\nPATCH /items/{}\n{} {}\n{}\n", itemId, header, ownerId, incomingItemDto);
         return itemService.patchItemById(ownerId, itemId, incomingItemDto);
     }
