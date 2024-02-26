@@ -1,6 +1,7 @@
 package ru.practicum.shareit.exeption;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,28 +27,43 @@ public class ExeptionHandler {
         Map<String, String> response = new HashMap<>();
         for (FieldError error : e.getBindingResult().getFieldErrors()) {
             response.put(error.getField(), error.getDefaultMessage());
-            log.error("Validation error in field {}", response.entrySet());
+            log.error("Validation error : {}", response.entrySet());
         }
         return response;
     }
 
     @ExceptionHandler(ValidationException.class)
-    public ResponseEntity<String> validatoinHandle(ValidationException e) {
+    public ResponseEntity<String> validationHandle(Exception e) {
         log.error("{} : {}", e.getClass().getSimpleName(), e.getMessage());
         return new ResponseEntity<>(e.getClass().getSimpleName() + " : " + e.getMessage(),
                 HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<String> dataIntegrityViolationException(DataIntegrityViolationException e) {
+        log.error("{} : {}", e.getClass().getSimpleName(), e.getMessage());
+        return new ResponseEntity<>(e.getClass().getSimpleName() + " : " + e.getMessage(),
+                HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<String> notFoundHandle(NotFoundException e) {
+    public ResponseEntity<String> notFoundHandle(Exception e) {
         log.error("{} : {}", e.getClass().getSimpleName(), e.getMessage());
         return new ResponseEntity<>(e.getClass().getSimpleName() + " : " + e.getMessage(),
                 HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> constraintViolationExceptionhandle(ConstraintViolationException e) {
+        log.error("{} : {}", e.getClass().getSimpleName(), e.getMessage());
+        return Map.of("error", e.getConstraintViolations().stream().findFirst().get().getMessage());
+    }
+
     @ExceptionHandler({
             MissingRequestHeaderException.class,
-            ConstraintViolationException.class,})
+            NotAvailableItemException.class,
+            SQLException.class})
     public ResponseEntity<String> exceptionHandle(Exception e) {
         log.error("{} : {}", e.getClass().getSimpleName(), e.getMessage());
         return new ResponseEntity<>(e.getClass().getSimpleName() + " : " + e.getMessage(),

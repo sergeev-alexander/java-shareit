@@ -3,25 +3,28 @@ package ru.practicum.shareit.item.dto;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.item.model.Item;
 
+import java.util.List;
+
 @Component
 public class ItemMapper {
 
-    public ItemDto mapItemToDto(Item item) {
-        return new ItemDto(
+    public OutgoingItemDto mapItemToOutgoingDto(Item item) {
+        return new OutgoingItemDto(
                 item.getId(),
                 item.getName(),
                 item.getDescription(),
-                item.getAvailable()
-        );
+                item.getAvailable(),
+                null,
+                null,
+                List.of());
     }
 
-    public Item mapDtoToItem(ItemDto itemDto) {
+    public Item mapIncomingDtoToItem(IncomingItemDto incomingItemDto) {
         return new Item(
-                itemDto.getId(),
-                itemDto.getName(),
-                itemDto.getDescription(),
-                itemDto.getAvailable(),
                 null,
+                incomingItemDto.getName(),
+                incomingItemDto.getDescription(),
+                incomingItemDto.getAvailable(),
                 null);
     }
 
