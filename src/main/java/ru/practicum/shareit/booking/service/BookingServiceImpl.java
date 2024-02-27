@@ -1,7 +1,7 @@
 package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.booking.dto.IncomingBookingDto;
@@ -33,36 +33,38 @@ public class BookingServiceImpl implements BookingService {
     private final UserRepository userRepository;
     private final BookingMapper bookingMapper;
 
-    private final Sort sortByStartDesc = Sort.by(Sort.Direction.DESC, "start");
-
     @Override
-    public Collection<OutgoingBookingDto> getAllUserBookings(Long bookerId, BookingState bookingState) {
+    public Collection<OutgoingBookingDto> getAllUserBookings(Long bookerId,
+                                                             BookingState bookingState,
+                                                             Pageable pageable) {
         userRepository.checkUserById(bookerId);
         switch (bookingState) {
             case ALL:
-                return bookingRepository.findByBookerId(bookerId, sortByStartDesc, OutgoingBookingDto.class);
+                return bookingRepository.findByBookerId(bookerId, OutgoingBookingDto.class, pageable);
             case CURRENT:
                 return bookingRepository.findByBookerIdAndEndIsAfterAndStartIsBefore(bookerId,
-                        LocalDateTime.now(), LocalDateTime.now(), sortByStartDesc);
+                        LocalDateTime.now(), LocalDateTime.now(), pageable);
             case PAST:
                 return bookingRepository.findByBookerIdAndEndIsBefore(bookerId,
-                        LocalDateTime.now(), sortByStartDesc);
+                        LocalDateTime.now(), pageable);
             case FUTURE:
                 return bookingRepository.findByBookerIdAndStartIsAfter(bookerId,
-                        LocalDateTime.now(), sortByStartDesc);
+                        LocalDateTime.now(), pageable);
             case WAITING:
                 return bookingRepository.findByBookerIdAndStatusIs(bookerId,
-                        BookingStatus.WAITING, sortByStartDesc);
+                        BookingStatus.WAITING, pageable);
             case REJECTED:
                 return bookingRepository.findByBookerIdAndStatusIs(bookerId,
-                        BookingStatus.REJECTED, sortByStartDesc);
+                        BookingStatus.REJECTED, pageable);
             default:
                 return List.of();
         }
     }
 
     @Override
-    public Collection<OutgoingBookingDto> getAllOwnerItemBookings(Long ownerId, BookingState bookingState) {
+    public Collection<OutgoingBookingDto> getAllOwnerItemBookings(Long ownerId,
+                                                                  BookingState bookingState,
+                                                                  Pageable pageable) {
         List<Item> ownerItemList = itemRepository.findByOwnerId(ownerId);
         if (ownerItemList.isEmpty()) {
             throw new NotFoundException("There's no items belong to user " + ownerId);
@@ -72,22 +74,23 @@ public class BookingServiceImpl implements BookingService {
                 .collect(Collectors.toList());
         switch (bookingState) {
             case ALL:
-                return bookingRepository.findByItemIdIn(ownerItemIdList, sortByStartDesc, OutgoingBookingDto.class);
+                return bookingRepository.findByItemIdIn(ownerItemIdList,
+                        OutgoingBookingDto.class, pageable);
             case CURRENT:
                 return bookingRepository.findByItemIdInAndStartIsBeforeAndEndIsAfter(ownerItemIdList,
-                        LocalDateTime.now(), LocalDateTime.now(), sortByStartDesc);
+                        LocalDateTime.now(), LocalDateTime.now(), pageable);
             case PAST:
                 return bookingRepository.findByItemIdInAndEndIsBefore(ownerItemIdList,
-                        LocalDateTime.now(), sortByStartDesc);
+                        LocalDateTime.now(), pageable);
             case FUTURE:
                 return bookingRepository.findByItemIdInAndStartIsAfter(ownerItemIdList,
-                        LocalDateTime.now(), sortByStartDesc);
+                        LocalDateTime.now(), pageable);
             case WAITING:
                 return bookingRepository.findByItemIdInAndStatusIs(ownerItemIdList,
-                        BookingStatus.WAITING, sortByStartDesc);
+                        BookingStatus.WAITING, pageable);
             case REJECTED:
                 return bookingRepository.findByItemIdInAndStatusIs(ownerItemIdList,
-                        BookingStatus.REJECTED, sortByStartDesc);
+                        BookingStatus.REJECTED, pageable);
             default:
                 return List.of();
         }

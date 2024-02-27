@@ -1,6 +1,7 @@
 package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exeption.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -19,8 +20,9 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
-    public Collection<UserDto> getAllUsers() {
-        return userRepository.findBy(UserDto.class);
+    @Override
+    public Collection<UserDto> getAllUsers(Pageable pageable) {
+        return userRepository.findBy(pageable, UserDto.class);
     }
 
     @Override

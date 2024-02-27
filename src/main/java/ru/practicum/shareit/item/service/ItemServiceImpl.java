@@ -1,6 +1,8 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingMapper;
@@ -41,10 +43,11 @@ public class ItemServiceImpl implements ItemService {
     private final CommentMapper commentMapper;
 
     @Override
-    public Collection<OutgoingItemDto> getAllOwnerItems(Long ownerId) {
+    public Collection<OutgoingItemDto> getAllOwnerItems(Long ownerId, Pageable pageable) {
         LocalDateTime now = LocalDateTime.now();
         userRepository.checkUserById(ownerId);
-        List<OutgoingItemDto> outgoingItemDtoList = itemRepository.findByOwnerId(ownerId)
+        List<OutgoingItemDto> outgoingItemDtoList = itemRepository.findByOwnerId(ownerId,
+                        PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()))
                 .stream()
                 .map(itemMapper::mapItemToOutgoingDto)
                 .collect(toList());
@@ -56,7 +59,7 @@ public class ItemServiceImpl implements ItemService {
                 .stream()
                 .collect(groupingBy(comment -> comment.getItem().getId(), toList()));
         Map<Long, List<Booking>> bookingMap = bookingRepository
-                .findByItemIdIn(itemIdList, Sort.by(Sort.Direction.ASC, "start"), Booking.class)
+                .findByItemIdIn(itemIdList, Booking.class, pageable)
                 .stream()
                 .collect(groupingBy(booking -> booking.getItem().getId(), toList()));
         return outgoingItemDtoList
@@ -97,14 +100,14 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Collection<OutgoingItemDto> getItemsBySearch(Long userId, String text) {
+    public Collection<OutgoingItemDto> getItemsBySearch(Long userId, String text, Pageable pageable) {
         userRepository.checkUserById(userId);
         if (text.isBlank()) {
             return List.of();
         }
         List<Item> itemList =
                 itemRepository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailableIsTrue(
-                        text, text);
+                        text, text, pageable);
         Map<Long, List<Comment>> commentMap = commentRepository.findByItemIdIn(itemList
                         .stream()
                         .map(Item::getId)

@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking.repository;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import ru.practicum.shareit.booking.dto.LastNextBookingDto;
@@ -15,48 +16,48 @@ import java.util.Optional;
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     <T> List<T> findByBookerId(Long bookerId,
-                               Sort sort,
-                               Class<T> projectionClass);
+                               Class<T> projectionClass,
+                               Pageable pageable);
 
     <T> Optional<T> findById(Long bookingId, Class<T> projectionClass);
 
     List<OutgoingBookingDto> findByBookerIdAndEndIsAfterAndStartIsBefore(Long bookerId,
                                                                          LocalDateTime now,
                                                                          LocalDateTime sameNow,
-                                                                         Sort sort);
+                                                                         Pageable pageable);
 
     List<OutgoingBookingDto> findByBookerIdAndEndIsBefore(Long bookerId,
                                                           LocalDateTime now,
-                                                          Sort sort);
+                                                          Pageable pageable);
 
     List<OutgoingBookingDto> findByBookerIdAndStartIsAfter(Long bookerId,
                                                            LocalDateTime now,
-                                                           Sort sort);
+                                                           Pageable pageable);
 
     List<OutgoingBookingDto> findByBookerIdAndStatusIs(Long bookerId,
                                                        BookingStatus status,
-                                                       Sort sort);
+                                                       Pageable pageable);
 
     <T> List<T> findByItemIdIn(Collection<Long> ownerItemsIdList,
-                               Sort sort,
-                               Class<T> projectionClass);
+                               Class<T> projectionClass,
+                               Pageable pageable);
 
     List<OutgoingBookingDto> findByItemIdInAndStartIsBeforeAndEndIsAfter(List<Long> ownerItemIdList,
                                                                          LocalDateTime now,
                                                                          LocalDateTime sameNow,
-                                                                         Sort sort);
+                                                                         Pageable pageable);
 
     List<OutgoingBookingDto> findByItemIdInAndEndIsBefore(List<Long> ownerItemIdList,
                                                           LocalDateTime now,
-                                                          Sort sort);
+                                                          Pageable pageable);
 
     List<OutgoingBookingDto> findByItemIdInAndStartIsAfter(List<Long> ownerItemIdList,
                                                            LocalDateTime now,
-                                                           Sort sort);
+                                                           Pageable pageable);
 
     List<OutgoingBookingDto> findByItemIdInAndStatusIs(List<Long> ownerItemIdList,
                                                        BookingStatus status,
-                                                       Sort sort);
+                                                       Pageable pageable);
 
     Optional<LastNextBookingDto> findFirstByItemIdAndStartIsAfterAndStatusIs(Long itemId,
                                                                              LocalDateTime now,
@@ -69,8 +70,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
                                                                               Sort sort);
 
     Boolean existsByBookerIdAndItemIdAndEndIsBeforeAndStatusIs(Long authorId,
-                                                             Long itemId,
-                                                             LocalDateTime now,
-                                                             BookingStatus bookingStatus);
+                                                               Long itemId,
+                                                               LocalDateTime now,
+                                                               BookingStatus bookingStatus);
 
 }
