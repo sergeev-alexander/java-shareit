@@ -39,7 +39,7 @@ public class BookingController {
             @RequestParam(name = "state", defaultValue = "ALL") @BookingStateValidation String bookingStateString) {
         log.info("Id-{} {} {}?{}", userId, request.getMethod(), request.getRequestURI(), request.getQueryString());
         return bookingService.getAllUserBookings(userId, BookingState.valueOf(bookingStateString),
-                PageRequest.of(offset, size, sortByStartDesc));
+                PageRequest.of(offset / size, size, sortByStartDesc));
     }
 
     @GetMapping("/owner")
@@ -51,7 +51,7 @@ public class BookingController {
             @RequestParam(name = "state", defaultValue = "ALL") @BookingStateValidation String bookingStateString) {
         log.info("Id-{} {} {}?{}", ownerId, request.getMethod(), request.getRequestURI(), request.getQueryString());
         return bookingService.getAllOwnerItemBookings(ownerId, BookingState.valueOf(bookingStateString),
-                PageRequest.of(offset, size, sortByStartDesc));
+                PageRequest.of(offset / size, size, sortByStartDesc));
     }
 
     @GetMapping("/{bookingId}")

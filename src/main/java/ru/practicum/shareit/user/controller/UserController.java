@@ -27,10 +27,10 @@ public class UserController {
     @GetMapping
     public Collection<UserDto> getAllUsers(
             HttpServletRequest request,
-            @RequestParam(value = "from", defaultValue = "0") @Min(0) Integer page,
+            @RequestParam(value = "from", defaultValue = "0") @Min(0) Integer offset,
             @RequestParam(value = "size", defaultValue = "20") @Min(1) @Max(100) Integer size) {
         log.info("{} {}?{}", request.getMethod(), request.getRequestURI(), request.getQueryString());
-        return userService.getAllUsers(PageRequest.of(page, size));
+        return userService.getAllUsers(PageRequest.of(offset / size, size));
     }
 
     @GetMapping("/{userId}")

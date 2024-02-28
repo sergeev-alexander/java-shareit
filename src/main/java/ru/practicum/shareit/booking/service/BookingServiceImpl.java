@@ -40,7 +40,7 @@ public class BookingServiceImpl implements BookingService {
         userRepository.checkUserById(bookerId);
         switch (bookingState) {
             case ALL:
-                return bookingRepository.findByBookerId(bookerId, OutgoingBookingDto.class, pageable);
+                return bookingRepository.findByBookerId(bookerId, pageable);
             case CURRENT:
                 return bookingRepository.findByBookerIdAndEndIsAfterAndStartIsBefore(bookerId,
                         LocalDateTime.now(), LocalDateTime.now(), pageable);

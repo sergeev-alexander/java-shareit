@@ -16,7 +16,8 @@ public class ItemMapper {
                 item.getAvailable(),
                 null,
                 null,
-                List.of());
+                List.of(),
+                item.getRequest() == null ? null : item.getRequest().getId());
     }
 
     public Item mapIncomingDtoToItem(IncomingItemDto incomingItemDto) {
@@ -25,6 +26,7 @@ public class ItemMapper {
                 incomingItemDto.getName(),
                 incomingItemDto.getDescription(),
                 incomingItemDto.getAvailable(),
+                null,
                 null);
     }
 

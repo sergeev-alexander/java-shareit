@@ -17,6 +17,7 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.repository.RequestRepository;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import javax.transaction.Transactional;
@@ -38,6 +39,7 @@ public class ItemServiceImpl implements ItemService {
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final RequestRepository requestRepository;
     private final ItemMapper itemMapper;
     private final BookingMapper bookingMapper;
     private final CommentMapper commentMapper;
@@ -129,6 +131,9 @@ public class ItemServiceImpl implements ItemService {
     public OutgoingItemDto postItem(Long ownerId, IncomingItemDto incomingItemDto) {
         Item item = itemMapper.mapIncomingDtoToItem(incomingItemDto);
         item.setOwner(userRepository.getUserById(ownerId));
+        if (incomingItemDto.getRequestId() != null) {
+            item.setRequest(requestRepository.findRequestById(incomingItemDto.getRequestId()));
+        }
         return itemMapper.mapItemToOutgoingDto(itemRepository.save(item));
     }
 

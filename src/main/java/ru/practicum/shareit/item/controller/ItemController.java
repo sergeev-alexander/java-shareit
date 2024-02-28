@@ -38,7 +38,7 @@ public class ItemController {
             @RequestParam(value = "size", defaultValue = "20") @Min(1) @Max(100) Integer size,
             @RequestHeader(header) @Positive Long ownerId) {
         log.info("Id-{} {} {}?{}", ownerId, request.getMethod(), request.getRequestURI(), request.getQueryString());
-        return itemService.getAllOwnerItems(ownerId, PageRequest.of(offset, size, sortByStartAsc));
+        return itemService.getAllOwnerItems(ownerId, PageRequest.of(offset / size, size, sortByStartAsc));
     }
 
     @GetMapping("/{itemId}")
@@ -58,7 +58,7 @@ public class ItemController {
             @RequestHeader(header) @Positive Long userId,
             @RequestParam String text) {
         log.info("Id-{} {} {}?{}", userId, request.getMethod(), request.getRequestURI(), request.getQueryString());
-        return itemService.getItemsBySearch(userId, text, PageRequest.of(offset, size));
+        return itemService.getItemsBySearch(userId, text, PageRequest.of(offset / size, size));
     }
 
     @PostMapping

@@ -15,9 +15,7 @@ import java.util.Optional;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
-    <T> List<T> findByBookerId(Long bookerId,
-                               Class<T> projectionClass,
-                               Pageable pageable);
+    List<OutgoingBookingDto> findByBookerId(Long bookerId, Pageable pageable);
 
     <T> Optional<T> findById(Long bookingId, Class<T> projectionClass);
 

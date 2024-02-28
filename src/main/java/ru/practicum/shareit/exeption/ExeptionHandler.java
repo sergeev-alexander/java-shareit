@@ -2,6 +2,7 @@ package ru.practicum.shareit.exeption;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -75,6 +76,11 @@ public class ExeptionHandler {
         log.error("{} : {}", e.getClass().getSimpleName(), e.getMessage());
         return new ResponseEntity<>(e.getClass().getSimpleName() + " : " + e.getMessage(),
                 HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(InvalidDataAccessApiUsageException.class)
+    public void handle(InvalidDataAccessApiUsageException e) {
+        e.printStackTrace();
     }
 
 }

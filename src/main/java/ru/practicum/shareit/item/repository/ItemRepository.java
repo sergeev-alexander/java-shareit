@@ -21,6 +21,10 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     Optional<Item> findByIdAndOwnerId(Long itemId, Long ownerId);
 
+    List<Item> findByRequestIdIn(List<Long> requestIds);
+
+    List<Item> findByRequestId(Long requestId);
+
     void deleteByOwner(Long ownerId);
 
     default Item getItemById(Long itemId) {
