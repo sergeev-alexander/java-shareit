@@ -142,8 +142,8 @@ class RequestControllerTest {
     void getAllRequests_whenNoRequestHeader_shouldThrowMissingRequestHeaderException() {
         mockMvc.perform(get("/requests/all?from=0&size=1"))
                 .andExpect(status().isBadRequest())
-                .andExpect(result -> assertTrue(result.
-                        getResolvedException() instanceof MissingRequestHeaderException))
+                .andExpect(result -> assertTrue(result.getResolvedException()
+                        instanceof MissingRequestHeaderException))
                 .andExpect(result -> assertEquals(
                         "Required request header 'X-Sharer-User-Id' " +
                                 "for method parameter type Long is not present",
@@ -231,8 +231,8 @@ class RequestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(incomingRequestDto)))
                 .andExpect(status().isBadRequest())
-                .andExpect(result -> assertTrue(result.
-                        getResolvedException() instanceof MissingRequestHeaderException))
+                .andExpect(result -> assertTrue(result.getResolvedException()
+                        instanceof MissingRequestHeaderException))
                 .andExpect(result -> assertEquals(
                         "Required request header 'X-Sharer-User-Id' " +
                                 "for method parameter type Long is not present",

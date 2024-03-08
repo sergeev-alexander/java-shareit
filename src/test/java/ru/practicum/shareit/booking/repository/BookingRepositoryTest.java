@@ -332,6 +332,7 @@ class BookingRepositoryTest {
         assertNotNull(result);
         assertTrue(result);
     }
+
     @Test
     void existsByBookerIdAndItemIdAndEndIsBeforeAndStatusIs_whenBookingDoesNotExist_shouldReturnFalse() {
         saveThreeBookings();
