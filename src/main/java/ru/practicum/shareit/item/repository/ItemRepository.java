@@ -25,7 +25,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     List<Item> findByRequestId(Long requestId);
 
-    void deleteByOwner(Long ownerId);
+    void deleteByOwnerId(Long ownerId);
 
     default Item getItemById(Long itemId) {
         return findById(itemId).orElseThrow(() -> new NotFoundException("There's no item with id " + itemId));

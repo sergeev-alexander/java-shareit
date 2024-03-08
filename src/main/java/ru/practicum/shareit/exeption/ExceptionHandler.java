@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -20,9 +19,9 @@ import java.util.Map;
 
 @Slf4j
 @RestControllerAdvice
-public class ExeptionHandler {
+public class ExceptionHandler {
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @org.springframework.web.bind.annotation.ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> methodArgumentNotValidHendle(MethodArgumentNotValidException e) {
         Map<String, String> response = new HashMap<>();
@@ -33,35 +32,35 @@ public class ExeptionHandler {
         return response;
     }
 
-    @ExceptionHandler(ValidationException.class)
+    @org.springframework.web.bind.annotation.ExceptionHandler(ValidationException.class)
     public ResponseEntity<String> validationHandle(Exception e) {
         log.error("{} : {}", e.getClass().getSimpleName(), e.getMessage());
         return new ResponseEntity<>(e.getClass().getSimpleName() + " : " + e.getMessage(),
                 HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(DataIntegrityViolationException.class)
+    @org.springframework.web.bind.annotation.ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<String> dataIntegrityViolationException(DataIntegrityViolationException e) {
         log.error("{} : {}", e.getClass().getSimpleName(), e.getMessage());
         return new ResponseEntity<>(e.getClass().getSimpleName() + " : " + e.getMessage(),
                 HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(NotFoundException.class)
+    @org.springframework.web.bind.annotation.ExceptionHandler(NotFoundException.class)
     public ResponseEntity<String> notFoundHandle(Exception e) {
         log.error("{} : {}", e.getClass().getSimpleName(), e.getMessage());
         return new ResponseEntity<>(e.getClass().getSimpleName() + " : " + e.getMessage(),
                 HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(ConstraintViolationException.class)
+    @org.springframework.web.bind.annotation.ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> constraintViolationExceptionhandle(ConstraintViolationException e) {
         log.error("{} : {}", e.getClass().getSimpleName(), e.getMessage());
         return Map.of("error", e.getConstraintViolations().stream().findFirst().get().getMessage());
     }
 
-    @ExceptionHandler({
+    @org.springframework.web.bind.annotation.ExceptionHandler({
             MissingRequestHeaderException.class,
             NotAvailableItemException.class,
             SQLException.class})
@@ -71,14 +70,14 @@ public class ExeptionHandler {
                 HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(Throwable.class)
+    @org.springframework.web.bind.annotation.ExceptionHandler(Throwable.class)
     public ResponseEntity<String> throwableHandle(Throwable e) {
         log.error("{} : {}", e.getClass().getSimpleName(), e.getMessage());
         return new ResponseEntity<>(e.getClass().getSimpleName() + " : " + e.getMessage(),
                 HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(InvalidDataAccessApiUsageException.class)
+    @org.springframework.web.bind.annotation.ExceptionHandler(InvalidDataAccessApiUsageException.class)
     public void handle(InvalidDataAccessApiUsageException e) {
         e.printStackTrace();
     }

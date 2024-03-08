@@ -22,7 +22,6 @@ import ru.practicum.shareit.user.repository.UserRepository;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -40,18 +39,15 @@ public class ItemServiceImpl implements ItemService {
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
     private final RequestRepository requestRepository;
-    private final ItemMapper itemMapper;
-    private final BookingMapper bookingMapper;
-    private final CommentMapper commentMapper;
 
     @Override
-    public Collection<OutgoingItemDto> getAllOwnerItems(Long ownerId, Pageable pageable) {
+    public List<OutgoingItemDto> getAllOwnerItems(Long ownerId, Pageable pageable) {
         LocalDateTime now = LocalDateTime.now();
         userRepository.checkUserById(ownerId);
         List<OutgoingItemDto> outgoingItemDtoList = itemRepository.findByOwnerId(ownerId,
                         PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()))
                 .stream()
-                .map(itemMapper::mapItemToOutgoingDto)
+                .map(ItemMapper::mapItemToOutgoingDto)
                 .collect(toList());
         List<Long> itemIdList = outgoingItemDtoList
                 .stream()
@@ -69,20 +65,20 @@ public class ItemServiceImpl implements ItemService {
                 .peek(outgoingItemDto -> outgoingItemDto
                         .setComments(commentMap.getOrDefault(outgoingItemDto.getId(), List.of())
                                 .stream()
-                                .map(commentMapper::mapCommentToOutgoingDto)
+                                .map(CommentMapper::mapCommentToOutgoingDto)
                                 .collect(toList())))
                 .peek(outgoingItemDto -> outgoingItemDto
                         .setLastBooking(bookingMap.getOrDefault(outgoingItemDto.getId(), List.of())
                                 .stream()
                                 .filter(booking -> !booking.getStart().isAfter(now))
-                                .map(bookingMapper::mapBookingToLastNextDto)
+                                .map(BookingMapper::mapBookingToLastNextDto)
                                 .reduce((booking1, booking2) -> booking2)
                                 .orElse(null)))
                 .peek(outgoingItemDto -> outgoingItemDto
                         .setNextBooking(bookingMap.getOrDefault(outgoingItemDto.getId(), List.of())
                                 .stream()
                                 .filter(booking -> booking.getStart().isAfter(now))
-                                .map(bookingMapper::mapBookingToLastNextDto)
+                                .map(BookingMapper::mapBookingToLastNextDto)
                                 .findFirst()
                                 .orElse(null)))
                 .collect(toList());
@@ -92,7 +88,7 @@ public class ItemServiceImpl implements ItemService {
     public OutgoingItemDto getItemDtoById(Long userId, Long itemId) {
         userRepository.checkUserById(userId);
         Item item = itemRepository.getItemById(itemId);
-        OutgoingItemDto outgoingItemDto = itemMapper.mapItemToOutgoingDto(item);
+        OutgoingItemDto outgoingItemDto = ItemMapper.mapItemToOutgoingDto(item);
         if (item.getOwner().getId().equals(userId)) {
             outgoingItemDto.setLastBooking(getLastBookingByItemId(itemId));
             outgoingItemDto.setNextBooking(getNextBookingByItemId(itemId));
@@ -102,7 +98,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Collection<OutgoingItemDto> getItemsBySearch(Long userId, String text, Pageable pageable) {
+    public List<OutgoingItemDto> getItemsBySearch(Long userId, String text, Pageable pageable) {
         userRepository.checkUserById(userId);
         if (text.isBlank()) {
             return List.of();
@@ -118,23 +114,23 @@ public class ItemServiceImpl implements ItemService {
                 .collect(groupingBy(comment -> comment.getItem().getId(), toList()));
         return itemList
                 .stream()
-                .map(itemMapper::mapItemToOutgoingDto)
+                .map(ItemMapper::mapItemToOutgoingDto)
                 .peek(outgoingItemDto -> outgoingItemDto
                         .setComments(commentMap.getOrDefault(outgoingItemDto.getId(), List.of())
                                 .stream()
-                                .map(commentMapper::mapCommentToOutgoingDto)
+                                .map(CommentMapper::mapCommentToOutgoingDto)
                                 .collect(toList())))
                 .collect(toList());
     }
 
     @Override
     public OutgoingItemDto postItem(Long ownerId, IncomingItemDto incomingItemDto) {
-        Item item = itemMapper.mapIncomingDtoToItem(incomingItemDto);
+        Item item = ItemMapper.mapIncomingDtoToItem(incomingItemDto);
         item.setOwner(userRepository.getUserById(ownerId));
         if (incomingItemDto.getRequestId() != null) {
             item.setRequest(requestRepository.findRequestById(incomingItemDto.getRequestId()));
         }
-        return itemMapper.mapItemToOutgoingDto(itemRepository.save(item));
+        return ItemMapper.mapItemToOutgoingDto(itemRepository.save(item));
     }
 
     @Override
@@ -144,10 +140,10 @@ public class ItemServiceImpl implements ItemService {
             throw new NotAvailableItemException("Author with id " + authorId
                     + " has no rights to leve a comment to item with id " + itemId + "!");
         }
-        Comment comment = commentMapper.mapIncommingDtoToComment(incomingCommentDto);
+        Comment comment = CommentMapper.mapIncommingDtoToComment(incomingCommentDto);
         comment.setAuthor(userRepository.getUserById(authorId));
         comment.setItem(itemRepository.getItemById(itemId));
-        return commentMapper.mapCommentToOutgoingDto(commentRepository.save(comment));
+        return CommentMapper.mapCommentToOutgoingDto(commentRepository.save(comment));
     }
 
     @Override
@@ -165,7 +161,7 @@ public class ItemServiceImpl implements ItemService {
         if (null != incomingItemDto.getAvailable()) {
             item.setAvailable(incomingItemDto.getAvailable());
         }
-        return itemMapper.mapItemToOutgoingDto(itemRepository.save(item));
+        return ItemMapper.mapItemToOutgoingDto(itemRepository.save(item));
     }
 
     @Override
@@ -177,22 +173,22 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public void deleteAllOwnerItems(Long ownerId) {
-        itemRepository.deleteByOwner(ownerId);
+        itemRepository.deleteByOwnerId(ownerId);
     }
 
-    private LastNextBookingDto getNextBookingByItemId(Long itemId) {
+    protected LastNextBookingDto getNextBookingByItemId(Long itemId) {
         return bookingRepository.findFirstByItemIdAndStartIsAfterAndStatusIs(itemId, LocalDateTime.now(),
                 BookingStatus.APPROVED, Sort.by(Sort.Direction.ASC, "start")).orElse(null);
     }
 
-    private LastNextBookingDto getLastBookingByItemId(Long itemId) {
+    protected LastNextBookingDto getLastBookingByItemId(Long itemId) {
         return bookingRepository.findFirstByItemIdAndStartIsBeforeAndStatusIs(itemId, LocalDateTime.now(),
                 BookingStatus.APPROVED, Sort.by(Sort.Direction.DESC, "end")).orElse(null);
     }
 
     private List<OutgoingCommentDto> getCommentsByItemId(Long itemId) {
         return commentRepository.findByItemId(itemId).stream()
-                .map(commentMapper::mapCommentToOutgoingDto)
+                .map(CommentMapper::mapCommentToOutgoingDto)
                 .collect(toList());
     }
 

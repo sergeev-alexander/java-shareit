@@ -7,7 +7,7 @@ import ru.practicum.shareit.booking.model.BookingStatus;
 @Component
 public class BookingMapper {
 
-    public OutgoingBookingDto mapBookingToOutgoingDto(Booking booking) {
+    public static OutgoingBookingDto mapBookingToOutgoingDto(Booking booking) {
         return new OutgoingBookingDto(
                 booking.getId(),
                 booking.getStart(),
@@ -17,7 +17,7 @@ public class BookingMapper {
                 booking.getStatus());
     }
 
-    public Booking mapIncomingDtoToBooking(IncomingBookingDto incomingBookingDto) {
+    public static Booking mapIncomingDtoToBooking(IncomingBookingDto incomingBookingDto) {
         return new Booking(
                 incomingBookingDto.getId(),
                 incomingBookingDto.getStart(),
@@ -27,7 +27,7 @@ public class BookingMapper {
                 BookingStatus.WAITING);
     }
 
-    public LastNextBookingDto mapBookingToLastNextDto(Booking booking) {
+    public static LastNextBookingDto mapBookingToLastNextDto(Booking booking) {
         return new LastNextBookingDto(
                 booking.getId(),
                 booking.getBooker().getId());

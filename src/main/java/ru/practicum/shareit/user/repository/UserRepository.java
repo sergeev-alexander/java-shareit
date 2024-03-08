@@ -6,13 +6,10 @@ import ru.practicum.shareit.exeption.NotFoundException;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    <T> List<T> findBy(Pageable pageable, Class<T> projectionClass);
-
-    <T> Optional<T> findById(Long userId, Class<T> projectionClass);
+    List<User> findBy(Pageable pageable);
 
     default void checkUserById(Long userId) {
         if (!existsById(userId)) {

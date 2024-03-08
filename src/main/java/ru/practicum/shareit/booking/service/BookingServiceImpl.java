@@ -31,12 +31,11 @@ public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
-    private final BookingMapper bookingMapper;
 
     @Override
-    public Collection<OutgoingBookingDto> getAllUserBookings(Long bookerId,
-                                                             BookingState bookingState,
-                                                             Pageable pageable) {
+    public List<OutgoingBookingDto> getAllUserBookings(Long bookerId,
+                                                       BookingState bookingState,
+                                                       Pageable pageable) {
         userRepository.checkUserById(bookerId);
         switch (bookingState) {
             case ALL:
@@ -56,9 +55,8 @@ public class BookingServiceImpl implements BookingService {
             case REJECTED:
                 return bookingRepository.findByBookerIdAndStatusIs(bookerId,
                         BookingStatus.REJECTED, pageable);
-            default:
-                return List.of();
         }
+        return List.of();
     }
 
     @Override
@@ -91,9 +89,8 @@ public class BookingServiceImpl implements BookingService {
             case REJECTED:
                 return bookingRepository.findByItemIdInAndStatusIs(ownerItemIdList,
                         BookingStatus.REJECTED, pageable);
-            default:
-                return List.of();
         }
+        return List.of();
     }
 
     public OutgoingBookingDto getBookingById(Long userId, Long bookingId) {
@@ -115,12 +112,13 @@ public class BookingServiceImpl implements BookingService {
         if (!item.getAvailable()) {
             throw new NotAvailableItemException("Booking item is not available!");
         }
-        Booking booking = bookingMapper.mapIncomingDtoToBooking(incomingBookingDto);
+        Booking booking = BookingMapper.mapIncomingDtoToBooking(incomingBookingDto);
         booking.setBooker(booker);
         booking.setItem(item);
-        return bookingMapper.mapBookingToOutgoingDto(bookingRepository.save(booking));
+        return BookingMapper.mapBookingToOutgoingDto(bookingRepository.save(booking));
     }
 
+    @Override
     public OutgoingBookingDto patchBookingById(Long itemOwnerId, Long bookingId, Boolean approved) {
         Booking booking = getBookingById(bookingId, Booking.class);
         if (BookingStatus.WAITING != booking.getStatus()) {
@@ -130,10 +128,10 @@ public class BookingServiceImpl implements BookingService {
             throw new NotFoundException("Booking item don't belong to user with id " + itemOwnerId);
         }
         booking.setStatus(approved ? BookingStatus.APPROVED : BookingStatus.REJECTED);
-        return bookingMapper.mapBookingToOutgoingDto(bookingRepository.save(booking));
+        return BookingMapper.mapBookingToOutgoingDto(bookingRepository.save(booking));
     }
 
-    private <T> T getBookingById(Long bookingId, Class<T> projectionClass) {
+    protected <T> T getBookingById(Long bookingId, Class<T> projectionClass) {
         return bookingRepository.findById(bookingId, projectionClass)
                 .orElseThrow(() -> new NotFoundException("There's no booking with id " + bookingId));
     }

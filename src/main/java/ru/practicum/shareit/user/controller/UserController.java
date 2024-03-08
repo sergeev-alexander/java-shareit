@@ -27,10 +27,10 @@ public class UserController {
     @GetMapping
     public Collection<UserDto> getAllUsers(
             HttpServletRequest request,
-            @RequestParam(value = "from", defaultValue = "0") @Min(0) Integer offset,
-            @RequestParam(value = "size", defaultValue = "20") @Min(1) @Max(100) Integer size) {
+            @RequestParam(value = "from", defaultValue = "0") @Min(0) Integer firstElement,
+            @RequestParam(value = "size", defaultValue = "20") @Min(1) @Max(20) Integer size) {
         log.info("{} {}?{}", request.getMethod(), request.getRequestURI(), request.getQueryString());
-        return userService.getAllUsers(PageRequest.of(offset / size, size));
+        return userService.getAllUsers(PageRequest.of(firstElement / size, size));
     }
 
     @GetMapping("/{userId}")
@@ -38,7 +38,7 @@ public class UserController {
             HttpServletRequest request,
             @PathVariable @Positive Long userId) {
         log.info("{} {}", request.getMethod(), request.getRequestURI());
-        return userService.getUserDtoById(userId);
+        return userService.getUserById(userId);
     }
 
     @PostMapping

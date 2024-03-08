@@ -12,7 +12,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 public class IncomingRequestDto {
 
-    @Null(groups = ValidationMarker.OnCreate.class, message = "Creating comment already has an id!")
+    @Null(groups = ValidationMarker.OnCreate.class, message = "Creating request already has an id!")
     private Long id;
 
     @NotBlank(groups = ValidationMarker.OnCreate.class,

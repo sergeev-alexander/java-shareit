@@ -9,7 +9,7 @@ import java.util.List;
 @Component
 public class RequestMapper {
 
-    public Request mapIncomingDtoToRequest(IncomingRequestDto incomingRequestDto) {
+    public static Request mapIncomingDtoToRequest(IncomingRequestDto incomingRequestDto) {
         return new Request(
                 null,
                 incomingRequestDto.getDescription(),
@@ -17,7 +17,7 @@ public class RequestMapper {
                 null);
     }
 
-    public OutgoingRequestDto mapRequestToOutgoingDto(Request request) {
+    public static OutgoingRequestDto mapRequestToOutgoingDto(Request request) {
         return new OutgoingRequestDto(
                 request.getId(),
                 request.getDescription(),

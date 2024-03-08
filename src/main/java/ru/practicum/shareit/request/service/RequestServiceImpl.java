@@ -14,7 +14,6 @@ import ru.practicum.shareit.request.repository.RequestRepository;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import javax.transaction.Transactional;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -29,11 +28,9 @@ public class RequestServiceImpl implements RequestService {
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
     private final RequestRepository requestRepository;
-    private final ItemMapper itemMapper;
-    private final RequestMapper requestMapper;
 
     @Override
-    public Collection<OutgoingRequestDto> getAllRequesterRequests(Long requesterId, Pageable pageable) {
+    public List<OutgoingRequestDto> getAllRequesterRequests(Long requesterId, Pageable pageable) {
         userRepository.checkUserById(requesterId);
         List<Request> requestList = requestRepository.findByRequesterId(requesterId, pageable);
         Map<Long, List<OutgoingItemDto>> outgoingItemDtoMap = itemRepository.findByRequestIdIn(requestList
@@ -41,18 +38,18 @@ public class RequestServiceImpl implements RequestService {
                 .map(Request::getId)
                 .collect(toList()))
                 .stream()
-                .map(itemMapper::mapItemToOutgoingDto)
+                .map(ItemMapper::mapItemToOutgoingDto)
                 .collect(Collectors.groupingBy(OutgoingItemDto::getRequestId, toList()));
         return requestList
                 .stream()
-                .map(requestMapper::mapRequestToOutgoingDto)
+                .map(RequestMapper::mapRequestToOutgoingDto)
                 .peek(outgoingRequestDto -> outgoingRequestDto.setItems(outgoingItemDtoMap
                         .getOrDefault(outgoingRequestDto.getId(), List.of())))
                 .collect(toList());
     }
 
     @Override
-    public Collection<OutgoingRequestDto> getAllRequests(Long userId, Pageable pageable) {
+    public List<OutgoingRequestDto> getAllRequests(Long userId, Pageable pageable) {
         userRepository.checkUserById(userId);
         List<Request> requestList = requestRepository.findByRequesterIdIsNot(userId, pageable);
         Map<Long, List<OutgoingItemDto>> outgoingItemDtoMap = itemRepository.findByRequestIdIn(requestList
@@ -60,11 +57,11 @@ public class RequestServiceImpl implements RequestService {
                         .map(Request::getId)
                         .collect(toList()))
                 .stream()
-                .map(itemMapper::mapItemToOutgoingDto)
+                .map(ItemMapper::mapItemToOutgoingDto)
                 .collect(Collectors.groupingBy(OutgoingItemDto::getRequestId, toList()));
         return requestList
                 .stream()
-                .map(requestMapper::mapRequestToOutgoingDto)
+                .map(RequestMapper::mapRequestToOutgoingDto)
                 .peek(outgoingRequestDto -> outgoingRequestDto.setItems(outgoingItemDtoMap
                         .getOrDefault(outgoingRequestDto.getId(), null)))
                 .collect(toList());
@@ -76,18 +73,18 @@ public class RequestServiceImpl implements RequestService {
         Request request = requestRepository.findRequestById(requestId);
         List<OutgoingItemDto> itemList = itemRepository.findByRequestId(requestId)
                 .stream()
-                .map(itemMapper::mapItemToOutgoingDto)
+                .map(ItemMapper::mapItemToOutgoingDto)
                 .collect(toList());
-        OutgoingRequestDto outgoingRequestDto = requestMapper.mapRequestToOutgoingDto(request);
+        OutgoingRequestDto outgoingRequestDto = RequestMapper.mapRequestToOutgoingDto(request);
         outgoingRequestDto.setItems(itemList);
         return outgoingRequestDto;
     }
 
     @Override
     public OutgoingRequestDto postRequest(Long requesterId, IncomingRequestDto incomingRequestDto) {
-        Request request = requestMapper.mapIncomingDtoToRequest(incomingRequestDto);
+        Request request = RequestMapper.mapIncomingDtoToRequest(incomingRequestDto);
         request.setRequester(userRepository.getUserById(requesterId));
-        return requestMapper.mapRequestToOutgoingDto(requestRepository.save(request));
+        return RequestMapper.mapRequestToOutgoingDto(requestRepository.save(request));
     }
 
 }

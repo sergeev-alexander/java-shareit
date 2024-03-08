@@ -34,11 +34,11 @@ public class ItemController {
     @GetMapping
     public Collection<OutgoingItemDto> getAllOwnerItems(
             HttpServletRequest request,
-            @RequestParam(value = "from", defaultValue = "0") @Min(0) Integer offset,
-            @RequestParam(value = "size", defaultValue = "20") @Min(1) @Max(100) Integer size,
+            @RequestParam(value = "from", defaultValue = "0") @Min(0) Integer firstElement,
+            @RequestParam(value = "size", defaultValue = "20") @Min(1) @Max(20) Integer size,
             @RequestHeader(header) @Positive Long ownerId) {
         log.info("Id-{} {} {}?{}", ownerId, request.getMethod(), request.getRequestURI(), request.getQueryString());
-        return itemService.getAllOwnerItems(ownerId, PageRequest.of(offset / size, size, sortByStartAsc));
+        return itemService.getAllOwnerItems(ownerId, PageRequest.of(firstElement / size, size, sortByStartAsc));
     }
 
     @GetMapping("/{itemId}")
@@ -53,12 +53,12 @@ public class ItemController {
     @GetMapping("/search")
     public Collection<OutgoingItemDto> getItemsBySearch(
             HttpServletRequest request,
-            @RequestParam(value = "from", defaultValue = "0") @Min(0) Integer offset,
-            @RequestParam(value = "size", defaultValue = "20") @Min(1) @Max(100) Integer size,
+            @RequestParam(value = "from", defaultValue = "0") @Min(0) Integer firstElement,
+            @RequestParam(value = "size", defaultValue = "20") @Min(1) @Max(20) Integer size,
             @RequestHeader(header) @Positive Long userId,
-            @RequestParam String text) {
+            @RequestParam(value = "text") String text) {
         log.info("Id-{} {} {}?{}", userId, request.getMethod(), request.getRequestURI(), request.getQueryString());
-        return itemService.getItemsBySearch(userId, text, PageRequest.of(offset / size, size));
+        return itemService.getItemsBySearch(userId, text, PageRequest.of(firstElement / size, size));
     }
 
     @PostMapping

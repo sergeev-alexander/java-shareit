@@ -8,7 +8,7 @@ import java.util.List;
 @Component
 public class ItemMapper {
 
-    public OutgoingItemDto mapItemToOutgoingDto(Item item) {
+    public static OutgoingItemDto mapItemToOutgoingDto(Item item) {
         return new OutgoingItemDto(
                 item.getId(),
                 item.getName(),
@@ -20,7 +20,7 @@ public class ItemMapper {
                 item.getRequest() == null ? null : item.getRequest().getId());
     }
 
-    public Item mapIncomingDtoToItem(IncomingItemDto incomingItemDto) {
+    public static Item mapIncomingDtoToItem(IncomingItemDto incomingItemDto) {
         return new Item(
                 null,
                 incomingItemDto.getName(),

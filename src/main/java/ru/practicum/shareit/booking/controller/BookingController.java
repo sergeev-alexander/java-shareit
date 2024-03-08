@@ -33,25 +33,25 @@ public class BookingController {
     @GetMapping
     public Collection<OutgoingBookingDto> getAllUserBookings(
             HttpServletRequest request,
-            @RequestParam(value = "from", defaultValue = "0") @Min(0) Integer offset,
-            @RequestParam(value = "size", defaultValue = "20") @Min(1) @Max(100) Integer size,
+            @RequestParam(value = "from", defaultValue = "0") @Min(0) Integer firstElement,
+            @RequestParam(value = "size", defaultValue = "20") @Min(1) @Max(20) Integer size,
             @RequestHeader(header) @Positive Long userId,
             @RequestParam(name = "state", defaultValue = "ALL") @BookingStateValidation String bookingStateString) {
         log.info("Id-{} {} {}?{}", userId, request.getMethod(), request.getRequestURI(), request.getQueryString());
         return bookingService.getAllUserBookings(userId, BookingState.valueOf(bookingStateString),
-                PageRequest.of(offset / size, size, sortByStartDesc));
+                PageRequest.of(firstElement / size, size, sortByStartDesc));
     }
 
     @GetMapping("/owner")
-    public Collection<OutgoingBookingDto> getAllOwnerItemsBookings(
+    public Collection<OutgoingBookingDto> getAllOwnerItemBookings(
             HttpServletRequest request,
-            @RequestParam(value = "from", defaultValue = "0") @Min(0) Integer offset,
-            @RequestParam(value = "size", defaultValue = "20") @Min(1) @Max(100) Integer size,
+            @RequestParam(value = "from", defaultValue = "0") @Min(0) Integer firstElement,
+            @RequestParam(value = "size", defaultValue = "20") @Min(1) @Max(20) Integer size,
             @RequestHeader(header) @Positive Long ownerId,
             @RequestParam(name = "state", defaultValue = "ALL") @BookingStateValidation String bookingStateString) {
         log.info("Id-{} {} {}?{}", ownerId, request.getMethod(), request.getRequestURI(), request.getQueryString());
         return bookingService.getAllOwnerItemBookings(ownerId, BookingState.valueOf(bookingStateString),
-                PageRequest.of(offset / size, size, sortByStartDesc));
+                PageRequest.of(firstElement / size, size, sortByStartDesc));
     }
 
     @GetMapping("/{bookingId}")

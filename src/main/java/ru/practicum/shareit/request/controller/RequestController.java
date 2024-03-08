@@ -31,21 +31,22 @@ public class RequestController {
     @GetMapping
     public Collection<OutgoingRequestDto> getAllRequesterRequests(
             HttpServletRequest request,
-            @RequestParam(value = "from", defaultValue = "0") @Min(0) Integer offset,
-            @RequestParam(value = "size", defaultValue = "20") @Min(1) @Max(100) Integer size,
+            @RequestParam(value = "from", defaultValue = "0") @Min(0) Integer firstElement,
+            @RequestParam(value = "size", defaultValue = "20") @Min(1) @Max(20) Integer size,
             @RequestHeader(header) @Positive Long requesterId) {
         log.info("Id-{} {} {}?{}", requesterId, request.getMethod(), request.getRequestURI(), request.getQueryString());
-        return requestService.getAllRequesterRequests(requesterId, PageRequest.of(offset / size, size, sortByCreatingDesc));
+        return requestService.getAllRequesterRequests(requesterId,
+                PageRequest.of(firstElement / size, size, sortByCreatingDesc));
     }
 
     @GetMapping("/all")
     public Collection<OutgoingRequestDto> getAllRequests(
             HttpServletRequest request,
-            @RequestParam(value = "from", defaultValue = "0") @Min(0) Integer offset,
-            @RequestParam(value = "size", defaultValue = "20") @Min(1) @Max(100) Integer size,
+            @RequestParam(value = "from", defaultValue = "0") @Min(0) Integer firstElement,
+            @RequestParam(value = "size", defaultValue = "20") @Min(1) @Max(20) Integer size,
             @RequestHeader(header) @Positive Long userId) {
         log.info("Id-{} {} {}?{}", userId, request.getMethod(), request.getRequestURI(), request.getQueryString());
-        return requestService.getAllRequests(userId, PageRequest.of(offset / size, size, sortByCreatingDesc));
+        return requestService.getAllRequests(userId, PageRequest.of(firstElement / size, size, sortByCreatingDesc));
     }
 
     @GetMapping("/{requestId}")
