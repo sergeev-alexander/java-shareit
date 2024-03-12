@@ -1,9 +1,6 @@
 package ru.practicum.shareit.item.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import ru.practicum.shareit.request.model.Request;
 import ru.practicum.shareit.user.model.User;
 
@@ -14,6 +11,7 @@ import java.util.Objects;
 @Table(name = "items")
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class Item {
@@ -53,18 +51,6 @@ public class Item {
     @Override
     public int hashCode() {
         return Objects.hash(getId(), getName(), getDescription(), getAvailable());
-    }
-
-    @Override
-    public String toString() {
-        return "Item{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", available=" + available +
-                ", request=" + request +
-                ", owner=" + owner +
-                '}';
     }
 
 }

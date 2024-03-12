@@ -1,9 +1,6 @@
 package ru.practicum.shareit.item.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
@@ -14,6 +11,7 @@ import java.util.Objects;
 @Table(name = "comments")
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class Comment {
@@ -48,17 +46,6 @@ public class Comment {
     @Override
     public int hashCode() {
         return Objects.hash(getId(), getText(), getCreated());
-    }
-
-    @Override
-    public String toString() {
-        return "Comment{" +
-                "id=" + id +
-                ", text='" + text + '\'' +
-                ", item=" + item +
-                ", author=" + author +
-                ", created=" + created +
-                '}';
     }
 
 }

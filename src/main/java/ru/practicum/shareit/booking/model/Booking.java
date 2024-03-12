@@ -1,9 +1,6 @@
 package ru.practicum.shareit.booking.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
@@ -15,6 +12,7 @@ import java.util.Objects;
 @Table(name = "bookings")
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class Booking {
@@ -57,18 +55,6 @@ public class Booking {
     @Override
     public int hashCode() {
         return Objects.hash(getId(), getStart(), getEnd(), getItem(), getBooker(), getStatus());
-    }
-
-    @Override
-    public String toString() {
-        return "Booking{" +
-                "id=" + id +
-                ", start=" + start +
-                ", end=" + end +
-                ", item=" + item +
-                ", booker=" + booker +
-                ", status=" + status +
-                '}';
     }
 
 }

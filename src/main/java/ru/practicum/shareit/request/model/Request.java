@@ -1,9 +1,6 @@
 package ru.practicum.shareit.request.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
@@ -16,6 +13,7 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class Request {
 
     @Id
@@ -44,16 +42,6 @@ public class Request {
     @Override
     public int hashCode() {
         return Objects.hash(getId(), getDescription(), getCreated());
-    }
-
-    @Override
-    public String toString() {
-        return "Request{" +
-                "id=" + id +
-                ", description='" + description + '\'' +
-                ", created=" + created +
-                ", requester=" + requester +
-                '}';
     }
 
 }
