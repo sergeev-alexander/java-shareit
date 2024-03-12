@@ -19,6 +19,8 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.Positive;
 import java.util.Collection;
 
+import static ru.practicum.shareit.http.HttpHeader.header;
+
 @Slf4j
 @RestController
 @RequestMapping(path = "/bookings")
@@ -26,7 +28,6 @@ import java.util.Collection;
 @Validated
 public class BookingController {
 
-    private final String header = "X-Sharer-User-Id";
     private final Sort sortByStartDesc = Sort.by(Sort.Direction.DESC, "start");
     private final BookingService bookingService;
 

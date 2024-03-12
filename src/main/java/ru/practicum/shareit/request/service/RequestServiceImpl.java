@@ -33,38 +33,14 @@ public class RequestServiceImpl implements RequestService {
     public List<OutgoingRequestDto> getAllRequesterRequests(Long requesterId, Pageable pageable) {
         userRepository.checkUserById(requesterId);
         List<Request> requestList = requestRepository.findByRequesterId(requesterId, pageable);
-        Map<Long, List<OutgoingItemDto>> outgoingItemDtoMap = itemRepository.findByRequestIdIn(requestList
-                .stream()
-                .map(Request::getId)
-                .collect(toList()))
-                .stream()
-                .map(ItemMapper::mapItemToOutgoingDto)
-                .collect(Collectors.groupingBy(OutgoingItemDto::getRequestId, toList()));
-        return requestList
-                .stream()
-                .map(RequestMapper::mapRequestToOutgoingDto)
-                .peek(outgoingRequestDto -> outgoingRequestDto.setItems(outgoingItemDtoMap
-                        .getOrDefault(outgoingRequestDto.getId(), List.of())))
-                .collect(toList());
+        return joinItemsToRequestList(requestList);
     }
 
     @Override
     public List<OutgoingRequestDto> getAllRequests(Long userId, Pageable pageable) {
         userRepository.checkUserById(userId);
         List<Request> requestList = requestRepository.findByRequesterIdIsNot(userId, pageable);
-        Map<Long, List<OutgoingItemDto>> outgoingItemDtoMap = itemRepository.findByRequestIdIn(requestList
-                        .stream()
-                        .map(Request::getId)
-                        .collect(toList()))
-                .stream()
-                .map(ItemMapper::mapItemToOutgoingDto)
-                .collect(Collectors.groupingBy(OutgoingItemDto::getRequestId, toList()));
-        return requestList
-                .stream()
-                .map(RequestMapper::mapRequestToOutgoingDto)
-                .peek(outgoingRequestDto -> outgoingRequestDto.setItems(outgoingItemDtoMap
-                        .getOrDefault(outgoingRequestDto.getId(), null)))
-                .collect(toList());
+        return joinItemsToRequestList(requestList);
     }
 
     @Override
@@ -85,6 +61,22 @@ public class RequestServiceImpl implements RequestService {
         Request request = RequestMapper.mapIncomingDtoToRequest(incomingRequestDto);
         request.setRequester(userRepository.getUserById(requesterId));
         return RequestMapper.mapRequestToOutgoingDto(requestRepository.save(request));
+    }
+
+    private List<OutgoingRequestDto> joinItemsToRequestList(List<Request> requestList) {
+        Map<Long, List<OutgoingItemDto>> outgoingItemDtoMap = itemRepository.findByRequestIdIn(requestList
+                        .stream()
+                        .map(Request::getId)
+                        .collect(toList()))
+                .stream()
+                .map(ItemMapper::mapItemToOutgoingDto)
+                .collect(Collectors.groupingBy(OutgoingItemDto::getRequestId, toList()));
+        return requestList
+                .stream()
+                .map(RequestMapper::mapRequestToOutgoingDto)
+                .peek(outgoingRequestDto -> outgoingRequestDto.setItems(outgoingItemDtoMap
+                        .getOrDefault(outgoingRequestDto.getId(), List.of())))
+                .collect(toList());
     }
 
 }

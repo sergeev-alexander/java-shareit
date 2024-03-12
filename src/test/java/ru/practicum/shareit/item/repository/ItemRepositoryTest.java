@@ -108,8 +108,8 @@ class ItemRepositoryTest {
         item.setRequest(null);
         itemRepository.save(item);
         List<Item> result = itemRepository
-                .findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailableIsTrue(
-                        "Item name", "Item name", pageable);
+                .searchByTextInNameOrDescriptionAndAvailableTrue(
+                        "item name", "item name", pageable);
         List<Item> expected = List.of(item);
         assertNotNull(result);
         assertEquals(expected, result);
@@ -118,8 +118,8 @@ class ItemRepositoryTest {
     @Test
     void searchByText_whenItemIsNotPresent_shouldReturnAnEmptyList() {
         List<Item> result = itemRepository
-                .findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailableIsTrue(
-                        "Item name", "Item name", pageable);
+                .searchByTextInNameOrDescriptionAndAvailableTrue(
+                        "item name", "item name", pageable);
         assertNotNull(result);
         assertTrue(result.isEmpty());
     }

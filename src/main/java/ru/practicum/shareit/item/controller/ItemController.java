@@ -19,6 +19,8 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.Positive;
 import java.util.Collection;
 
+import static ru.practicum.shareit.http.HttpHeader.header;
+
 @Slf4j
 @RestController
 @RequestMapping("/items")
@@ -26,9 +28,7 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class ItemController {
 
-    private final String header = "X-Sharer-User-Id";
     private final Sort sortByStartAsc = Sort.by(Sort.Direction.ASC, "start");
-
     private final ItemService itemService;
 
     @GetMapping

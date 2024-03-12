@@ -17,7 +17,7 @@ import ru.practicum.shareit.booking.dto.OutgoingBookingDto;
 import ru.practicum.shareit.booking.model.BookingState;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.service.BookingService;
-import ru.practicum.shareit.exeption.ExceptionHandler;
+import ru.practicum.shareit.exeption.ExceptionResolver;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
@@ -33,8 +33,9 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.practicum.shareit.http.HttpHeader.header;
 
-@WebMvcTest({BookingController.class, ExceptionHandler.class})
+@WebMvcTest({BookingController.class, ExceptionResolver.class})
 class BookingControllerTest {
 
     @Autowired
@@ -45,7 +46,6 @@ class BookingControllerTest {
 
     @MockBean
     private BookingService bookingService;
-    private final String header = "X-Sharer-User-Id";
     private final Sort sortByStartDesc = Sort.by(Sort.Direction.DESC, "start");
     private final OutgoingBookingDto outgoingBookingDto = new OutgoingBookingDto(
             1L,

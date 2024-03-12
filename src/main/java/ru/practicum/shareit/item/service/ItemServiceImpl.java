@@ -104,8 +104,8 @@ public class ItemServiceImpl implements ItemService {
             return List.of();
         }
         List<Item> itemList =
-                itemRepository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailableIsTrue(
-                        text, text, pageable);
+                itemRepository.searchByTextInNameOrDescriptionAndAvailableTrue(
+                        text.toLowerCase(), text.toLowerCase(), pageable);
         Map<Long, List<Comment>> commentMap = commentRepository.findByItemIdIn(itemList
                         .stream()
                         .map(Item::getId)

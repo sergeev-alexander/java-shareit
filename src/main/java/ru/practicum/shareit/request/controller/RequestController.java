@@ -17,6 +17,8 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.Positive;
 import java.util.Collection;
 
+import static ru.practicum.shareit.http.HttpHeader.header;
+
 @Slf4j
 @RestController
 @RequestMapping("/requests")
@@ -24,7 +26,6 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class RequestController {
 
-    private final String header = "X-Sharer-User-Id";
     private final Sort sortByCreatingDesc = Sort.by(Sort.Direction.DESC, "created");
     private final RequestService requestService;
 

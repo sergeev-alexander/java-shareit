@@ -12,7 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
-import ru.practicum.shareit.exeption.ExceptionHandler;
+import ru.practicum.shareit.exeption.ExceptionResolver;
 import ru.practicum.shareit.item.dto.IncomingCommentDto;
 import ru.practicum.shareit.item.dto.IncomingItemDto;
 import ru.practicum.shareit.item.dto.OutgoingCommentDto;
@@ -31,8 +31,9 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.practicum.shareit.http.HttpHeader.header;
 
-@WebMvcTest({ItemController.class, ExceptionHandler.class})
+@WebMvcTest({ItemController.class, ExceptionResolver.class})
 class ItemControllerTest {
 
     @Autowired
@@ -43,7 +44,6 @@ class ItemControllerTest {
 
     @MockBean
     private ItemService itemService;
-    private final String header = "X-Sharer-User-Id";
     private final Sort sortByStartAsc = Sort.by(Sort.Direction.ASC, "start");
 
     @Test

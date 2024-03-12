@@ -185,8 +185,8 @@ class ItemServiceImplTest {
 
     @Test
     void getItemsBySearch_whenInvoke_shouldInvokeRepositoryMethods_andReturnItemList() {
-        when(itemRepository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailableIsTrue(
-                "Item name", "Item name", pageable))
+        when(itemRepository.searchByTextInNameOrDescriptionAndAvailableTrue(
+                "item name", "item name", pageable))
                 .thenReturn(List.of(item));
         when(commentRepository.findByItemIdIn(List.of(1L)))
                 .thenReturn(List.of(comment));
@@ -197,8 +197,8 @@ class ItemServiceImplTest {
         List<OutgoingItemDto> result = itemServiceImp.getItemsBySearch(1L, "Item name", pageable);
         assertEquals(expected, result);
         verify(userRepository).checkUserById(1L);
-        verify(itemRepository).findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailableIsTrue(
-                "Item name", "Item name", pageable);
+        verify(itemRepository).searchByTextInNameOrDescriptionAndAvailableTrue(
+                "item name", "item name", pageable);
         verify(commentRepository).findByItemIdIn(List.of(1L));
     }
 
