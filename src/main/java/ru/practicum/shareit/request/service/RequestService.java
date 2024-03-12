@@ -4,13 +4,13 @@ import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.request.dto.IncomingRequestDto;
 import ru.practicum.shareit.request.dto.OutgoingRequestDto;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface RequestService {
 
-    Collection<OutgoingRequestDto> getAllRequesterRequests(Long requesterId, Pageable pageable);
+    List<OutgoingRequestDto> getAllRequesterRequests(Long requesterId, Pageable pageable);
 
-    Collection<OutgoingRequestDto> getAllRequests(Long userId, Pageable pageable);
+    List<OutgoingRequestDto> getAllRequests(Long userId, Pageable pageable);
 
     OutgoingRequestDto getRequestById(Long userId, Long requestId);
 

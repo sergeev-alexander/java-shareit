@@ -34,13 +34,11 @@ class ItemRepositoryTest {
 
     @Autowired
     RequestRepository requestRepository;
-
     private final Pageable pageable = PageRequest.of(0, 20);
     private User owner;
     private User requester;
     private Request request;
     private Item item;
-
 
     @BeforeEach
     void setUsersAndItemAndRequest() {
@@ -208,4 +206,5 @@ class ItemRepositoryTest {
                 () -> itemRepository.getItemById(1L));
         assertEquals("There's no item with id 1", notFoundException.getMessage());
     }
+
 }

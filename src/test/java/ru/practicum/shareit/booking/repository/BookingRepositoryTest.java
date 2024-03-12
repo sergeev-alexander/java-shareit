@@ -11,7 +11,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.booking.dto.LastNextBookingDto;
-import ru.practicum.shareit.booking.dto.OutgoingBookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.item.model.Item;
@@ -91,14 +90,14 @@ class BookingRepositoryTest {
     @Test
     void findByBookerId_whenBookingExists_shouldReturnBookingList() {
         bookingRepository.save(currentBooking);
-        List<OutgoingBookingDto> expected = List.of(BookingMapper.mapBookingToOutgoingDto(currentBooking));
-        List<OutgoingBookingDto> result = bookingRepository.findByBookerId(2L, pageable);
+        List<Booking> expected = List.of(currentBooking);
+        List<Booking> result = bookingRepository.findByBookerId(2L, pageable);
         assertEquals(expected, result);
     }
 
     @Test
     void findByBookerId_whenBookingDoesNotExist_shouldReturnEmptyList() {
-        List<OutgoingBookingDto> result = bookingRepository.findByBookerId(2L, pageable);
+        List<Booking> result = bookingRepository.findByBookerId(2L, pageable);
         assertNotNull(result);
         assertTrue(result.isEmpty());
     }
@@ -106,22 +105,22 @@ class BookingRepositoryTest {
     @Test
     void findById_whenBookingPresent_shouldReturnOptionalOfBooking() {
         bookingRepository.save(currentBooking);
-        Optional<Booking> result = bookingRepository.findById(1L, Booking.class);
+        Optional<Booking> result = bookingRepository.findById(1L);
         assertTrue(result.isPresent());
         assertEquals(currentBooking, result.get());
     }
 
     @Test
     void findById_whenBookingNotPresent_shouldReturnEmptyOptional() {
-        Optional<Booking> result = bookingRepository.findById(1L, Booking.class);
+        Optional<Booking> result = bookingRepository.findById(1L);
         assertFalse(result.isPresent());
     }
 
     @Test
     void findByBookerIdAndEndIsAfterAndStartIsBefore_whenBookingExists_shouldReturnBookingList() {
         saveThreeBookings();
-        List<OutgoingBookingDto> expected = List.of(BookingMapper.mapBookingToOutgoingDto(currentBooking));
-        List<OutgoingBookingDto> result = bookingRepository.findByBookerIdAndEndIsAfterAndStartIsBefore(
+        List<Booking> expected = List.of(currentBooking);
+        List<Booking> result = bookingRepository.findByBookerIdAndEndIsAfterAndStartIsBefore(
                 2L, now, now, pageable);
         assertEquals(expected, result);
     }
@@ -130,7 +129,7 @@ class BookingRepositoryTest {
     void findByBookerIdAndEndIsAfterAndStartIsBefore_whenBookingDoesNotExist_shouldReturnEmptyList() {
         bookingRepository.save(pastBooking);
         bookingRepository.save(futureBooking);
-        List<OutgoingBookingDto> result = bookingRepository.findByBookerIdAndEndIsAfterAndStartIsBefore(
+        List<Booking> result = bookingRepository.findByBookerIdAndEndIsAfterAndStartIsBefore(
                 2L, now, now, pageable);
         assertNotNull(result);
         assertTrue(result.isEmpty());
@@ -139,8 +138,8 @@ class BookingRepositoryTest {
     @Test
     void findByBookerIdAndEndIsBefore_whenBookingExists_shouldReturnBookingList() {
         saveThreeBookings();
-        List<OutgoingBookingDto> expected = List.of(BookingMapper.mapBookingToOutgoingDto(pastBooking));
-        List<OutgoingBookingDto> result = bookingRepository.findByBookerIdAndEndIsBefore(
+        List<Booking> expected = List.of(pastBooking);
+        List<Booking> result = bookingRepository.findByBookerIdAndEndIsBefore(
                 2L, now, pageable);
         assertEquals(expected, result);
     }
@@ -149,7 +148,7 @@ class BookingRepositoryTest {
     void findByBookerIdAndEndIsBefore_whenBookingDoesNotExist_shouldReturnEmptyList() {
         bookingRepository.save(currentBooking);
         bookingRepository.save(futureBooking);
-        List<OutgoingBookingDto> result = bookingRepository.findByBookerIdAndEndIsBefore(
+        List<Booking> result = bookingRepository.findByBookerIdAndEndIsBefore(
                 2L, now, pageable);
         assertNotNull(result);
         assertTrue(result.isEmpty());
@@ -158,8 +157,8 @@ class BookingRepositoryTest {
     @Test
     void findByBookerIdAndStartIsAfter_whenBookingExists_shouldReturnBookingList() {
         saveThreeBookings();
-        List<OutgoingBookingDto> expected = List.of(BookingMapper.mapBookingToOutgoingDto(futureBooking));
-        List<OutgoingBookingDto> result = bookingRepository.findByBookerIdAndStartIsAfter(
+        List<Booking> expected = List.of(futureBooking);
+        List<Booking> result = bookingRepository.findByBookerIdAndStartIsAfter(
                 2L, now, pageable);
         assertEquals(expected, result);
     }
@@ -168,7 +167,7 @@ class BookingRepositoryTest {
     void findByBookerIdAndStartIsAfter_whenBookingDoesNotExist_shouldReturnAnEmptyList() {
         bookingRepository.save(currentBooking);
         bookingRepository.save(pastBooking);
-        List<OutgoingBookingDto> result = bookingRepository.findByBookerIdAndStartIsAfter(
+        List<Booking> result = bookingRepository.findByBookerIdAndStartIsAfter(
                 2L, now, pageable);
         assertNotNull(result);
         assertTrue(result.isEmpty());
@@ -177,8 +176,8 @@ class BookingRepositoryTest {
     @Test
     void findByBookerIdAndStatusIs_whenBookingExists_shouldReturnBookingList() {
         bookingRepository.save(currentBooking);
-        List<OutgoingBookingDto> expected = List.of(BookingMapper.mapBookingToOutgoingDto(currentBooking));
-        List<OutgoingBookingDto> result = bookingRepository.findByBookerIdAndStatusIs(2L,
+        List<Booking> expected = List.of(currentBooking);
+        List<Booking> result = bookingRepository.findByBookerIdAndStatusIs(2L,
                 BookingStatus.APPROVED, pageable);
         assertEquals(expected, result);
     }
@@ -186,7 +185,7 @@ class BookingRepositoryTest {
     @Test
     void findByBookerIdAndStatusIs_whenBookingDoesNotExist_shouldReturnAnEmptyList() {
         bookingRepository.save(currentBooking);
-        List<OutgoingBookingDto> result = bookingRepository.findByBookerIdAndStatusIs(2L,
+        List<Booking> result = bookingRepository.findByBookerIdAndStatusIs(2L,
                 BookingStatus.REJECTED, pageable);
         assertNotNull(result);
         assertTrue(result.isEmpty());
@@ -195,17 +194,15 @@ class BookingRepositoryTest {
     @Test
     void findByItemIdIn_whenBookingExists_shouldReturnBookingList() {
         bookingRepository.save(currentBooking);
-        List<OutgoingBookingDto> expected = List.of(BookingMapper.mapBookingToOutgoingDto(currentBooking));
-        List<OutgoingBookingDto> result = bookingRepository.findByItemIdIn(List.of(1L),
-                OutgoingBookingDto.class, pageable);
+        List<Booking> expected = List.of(currentBooking);
+        List<Booking> result = bookingRepository.findByItemIdIn(List.of(1L), pageable);
         assertEquals(expected, result);
     }
 
     @Test
     void findByItemIdIn_whenBookingDoesNotExist_shouldReturnAnEmptyList() {
         saveThreeBookings();
-        List<OutgoingBookingDto> result = bookingRepository.findByItemIdIn(List.of(123L),
-                OutgoingBookingDto.class, pageable);
+        List<Booking> result = bookingRepository.findByItemIdIn(List.of(123L), pageable);
         assertNotNull(result);
         assertTrue(result.isEmpty());
     }
@@ -213,8 +210,8 @@ class BookingRepositoryTest {
     @Test
     void findByItemIdInAndStartIsBeforeAndEndIsAfter_whenBookingExists_shouldReturnIt() {
         saveThreeBookings();
-        List<OutgoingBookingDto> expected = List.of(BookingMapper.mapBookingToOutgoingDto(currentBooking));
-        List<OutgoingBookingDto> result = bookingRepository.findByItemIdInAndStartIsBeforeAndEndIsAfter(
+        List<Booking> expected = List.of(currentBooking);
+        List<Booking> result = bookingRepository.findByItemIdInAndStartIsBeforeAndEndIsAfter(
                 List.of(1L), now, now, pageable);
         assertEquals(expected, result);
     }
@@ -222,7 +219,7 @@ class BookingRepositoryTest {
     @Test
     void findByItemIdInAndStartIsBeforeAndEndIsAfter_whenBookingDoesNotExist_shouldReturnAnEmptyList() {
         saveThreeBookings();
-        List<OutgoingBookingDto> result = bookingRepository.findByItemIdInAndStartIsBeforeAndEndIsAfter(
+        List<Booking> result = bookingRepository.findByItemIdInAndStartIsBeforeAndEndIsAfter(
                 List.of(123L), now, now, pageable);
         assertNotNull(result);
         assertTrue(result.isEmpty());
@@ -231,8 +228,8 @@ class BookingRepositoryTest {
     @Test
     void findByItemIdInAndEndIsBefore_whenBookingExists_shouldReturnIt() {
         saveThreeBookings();
-        List<OutgoingBookingDto> expected = List.of(BookingMapper.mapBookingToOutgoingDto(pastBooking));
-        List<OutgoingBookingDto> result = bookingRepository.findByItemIdInAndEndIsBefore(
+        List<Booking> expected = List.of(pastBooking);
+        List<Booking> result = bookingRepository.findByItemIdInAndEndIsBefore(
                 List.of(1L), now, pageable);
         assertEquals(expected, result);
     }
@@ -240,7 +237,7 @@ class BookingRepositoryTest {
     @Test
     void findByItemIdInAndEndIsBefore_whenBookingDoesNotExist_shouldReturnAnEmptyList() {
         saveThreeBookings();
-        List<OutgoingBookingDto> result = bookingRepository.findByItemIdInAndEndIsBefore(
+        List<Booking> result = bookingRepository.findByItemIdInAndEndIsBefore(
                 List.of(123L), now, pageable);
         assertNotNull(result);
         assertTrue(result.isEmpty());
@@ -249,8 +246,8 @@ class BookingRepositoryTest {
     @Test
     void findByItemIdInAndStartIsAfter_whenBookingExists_shouldReturnIt() {
         saveThreeBookings();
-        List<OutgoingBookingDto> expected = List.of(BookingMapper.mapBookingToOutgoingDto(futureBooking));
-        List<OutgoingBookingDto> result = bookingRepository.findByItemIdInAndStartIsAfter(
+        List<Booking> expected = List.of(futureBooking);
+        List<Booking> result = bookingRepository.findByItemIdInAndStartIsAfter(
                 List.of(1L), now, pageable);
         assertEquals(expected, result);
     }
@@ -258,7 +255,7 @@ class BookingRepositoryTest {
     @Test
     void findByItemIdInAndStartIsAfter_whenBookingDoesNotExist_shouldReturnAnEmptyList() {
         saveThreeBookings();
-        List<OutgoingBookingDto> result = bookingRepository.findByItemIdInAndStartIsAfter(
+        List<Booking> result = bookingRepository.findByItemIdInAndStartIsAfter(
                 List.of(123L), now, pageable);
         assertNotNull(result);
         assertTrue(result.isEmpty());
@@ -267,8 +264,8 @@ class BookingRepositoryTest {
     @Test
     void findByItemIdInAndStatusIs_whenBookingExists_shouldReturnIt() {
         bookingRepository.save(currentBooking);
-        List<OutgoingBookingDto> expected = List.of(BookingMapper.mapBookingToOutgoingDto(currentBooking));
-        List<OutgoingBookingDto> result = bookingRepository.findByItemIdInAndStatusIs(
+        List<Booking> expected = List.of(currentBooking);
+        List<Booking> result = bookingRepository.findByItemIdInAndStatusIs(
                 List.of(1L), BookingStatus.APPROVED, pageable);
         assertEquals(expected, result);
     }
@@ -276,7 +273,7 @@ class BookingRepositoryTest {
     @Test
     void findByItemIdInAndStatusIs_whenBookingDoesNotExist_shouldReturnAnEmptyList() {
         saveThreeBookings();
-        List<OutgoingBookingDto> result = bookingRepository.findByItemIdInAndStatusIs(
+        List<Booking> result = bookingRepository.findByItemIdInAndStatusIs(
                 List.of(1L), BookingStatus.WAITING, pageable);
         assertNotNull(result);
         assertTrue(result.isEmpty());
@@ -289,7 +286,8 @@ class BookingRepositoryTest {
                 futureBooking.getId(),
                 futureBooking.getBooker().getId());
         Optional<LastNextBookingDto> result = bookingRepository.findFirstByItemIdAndStartIsAfterAndStatusIs(
-                1L, now, BookingStatus.APPROVED, Sort.by(Sort.Direction.ASC, "start"));
+                1L, now, BookingStatus.APPROVED, Sort.by(Sort.Direction.ASC, "start"))
+                .map(BookingMapper::mapBookingToLastNextDto);
         assertTrue(result.isPresent());
         assertEquals(expected, result.get());
     }
@@ -298,7 +296,8 @@ class BookingRepositoryTest {
     void findFirstByItemIdAndStartIsAfterAndStatusIs_whenBookingDoesNotExist_shouldReturnEmptyOptional() {
         saveThreeBookings();
         Optional<LastNextBookingDto> result = bookingRepository.findFirstByItemIdAndStartIsAfterAndStatusIs(
-                123L, now, BookingStatus.APPROVED, Sort.by(Sort.Direction.ASC, "start"));
+                123L, now, BookingStatus.APPROVED, Sort.by(Sort.Direction.ASC, "start"))
+                .map(BookingMapper::mapBookingToLastNextDto);
         assertNotNull(result);
         assertFalse(result.isPresent());
     }
@@ -310,7 +309,8 @@ class BookingRepositoryTest {
                 currentBooking.getId(),
                 currentBooking.getBooker().getId());
         Optional<LastNextBookingDto> result = bookingRepository.findFirstByItemIdAndStartIsBeforeAndStatusIs(
-                1L, now, BookingStatus.APPROVED, Sort.by(Sort.Direction.DESC, "end"));
+                1L, now, BookingStatus.APPROVED, Sort.by(Sort.Direction.DESC, "end"))
+                .map(BookingMapper::mapBookingToLastNextDto);
         assertTrue(result.isPresent());
         assertEquals(expected, result.get());
     }
@@ -319,7 +319,8 @@ class BookingRepositoryTest {
     void findFirstByItemIdAndStartIsBeforeAndStatusIs_whenBookingDoesNotExist_shouldReturnEmptyOptional() {
         saveThreeBookings();
         Optional<LastNextBookingDto> result = bookingRepository.findFirstByItemIdAndStartIsBeforeAndStatusIs(
-                123L, now, BookingStatus.APPROVED, Sort.by(Sort.Direction.DESC, "end"));
+                123L, now, BookingStatus.APPROVED, Sort.by(Sort.Direction.DESC, "end"))
+                .map(BookingMapper::mapBookingToLastNextDto);
         assertNotNull(result);
         assertFalse(result.isPresent());
     }

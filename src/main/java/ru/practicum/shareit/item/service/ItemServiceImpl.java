@@ -57,7 +57,7 @@ public class ItemServiceImpl implements ItemService {
                 .stream()
                 .collect(groupingBy(comment -> comment.getItem().getId(), toList()));
         Map<Long, List<Booking>> bookingMap = bookingRepository
-                .findByItemIdIn(itemIdList, Booking.class, pageable)
+                .findByItemIdIn(itemIdList, pageable)
                 .stream()
                 .collect(groupingBy(booking -> booking.getItem().getId(), toList()));
         return outgoingItemDtoList
@@ -177,13 +177,17 @@ public class ItemServiceImpl implements ItemService {
     }
 
     protected LastNextBookingDto getNextBookingByItemId(Long itemId) {
-        return bookingRepository.findFirstByItemIdAndStartIsAfterAndStatusIs(itemId, LocalDateTime.now(),
+        Booking booking = bookingRepository
+                .findFirstByItemIdAndStartIsAfterAndStatusIs(itemId, LocalDateTime.now(),
                 BookingStatus.APPROVED, Sort.by(Sort.Direction.ASC, "start")).orElse(null);
+        return booking == null ? null : BookingMapper.mapBookingToLastNextDto(booking);
     }
 
     protected LastNextBookingDto getLastBookingByItemId(Long itemId) {
-        return bookingRepository.findFirstByItemIdAndStartIsBeforeAndStatusIs(itemId, LocalDateTime.now(),
+        Booking booking = bookingRepository
+                .findFirstByItemIdAndStartIsBeforeAndStatusIs(itemId, LocalDateTime.now(),
                 BookingStatus.APPROVED, Sort.by(Sort.Direction.DESC, "end")).orElse(null);
+        return booking == null ? null : BookingMapper.mapBookingToLastNextDto(booking);
     }
 
     private List<OutgoingCommentDto> getCommentsByItemId(Long itemId) {

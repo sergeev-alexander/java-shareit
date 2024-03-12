@@ -1,15 +1,18 @@
 package ru.practicum.shareit.item.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import ru.practicum.shareit.exeption.ValidationMarker;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
+import java.util.Objects;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 public class IncomingItemDto {
 
@@ -32,5 +35,31 @@ public class IncomingItemDto {
     @Positive(groups = ValidationMarker.OnCreate.class,
             message = "Creating item requestId field must be positive!")
     private Long requestId;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof IncomingItemDto)) return false;
+        IncomingItemDto that = (IncomingItemDto) o;
+        return Objects.equals(getName(), that.getName())
+                && Objects.equals(getDescription(), that.getDescription())
+                && Objects.equals(getAvailable(), that.getAvailable())
+                && Objects.equals(getRequestId(), that.getRequestId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName(), getDescription(), getAvailable(), getRequestId());
+    }
+
+    @Override
+    public String toString() {
+        return "IncomingItemDto{" +
+                "name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", available=" + available +
+                ", requestId=" + requestId +
+                '}';
+    }
 
 }

@@ -27,19 +27,17 @@ class UserServiceImplTest {
 
     @Mock
     private UserRepository userRepository;
-
     private final UserDto userDto = new UserDto(
             1L,
             "Some name",
             "some@email.com");
-
     private final User user = new User(
             1L,
             "Some name",
             "some@email.com");
 
     @Test
-    void getAllUsers_whenCalled_shouldCallUserRepository_andReturnCollection() {
+    void getAllUsers_whenInvoke_shouldInvokeUserRepository_andReturnCollection() {
         when(userRepository.findBy(PageRequest.of(0, 20)))
                 .thenReturn(List.of(user));
         Collection<UserDto> result = userServiceImpl.getAllUsers(PageRequest.of(0, 20));
@@ -49,7 +47,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void getUserById_whenUserIsPresent_shouldCallUserRepository_andReturnUser() {
+    void getUserById_whenUserIsPresent_shouldInvokeUserRepository_andReturnUser() {
         when(userRepository.getUserById(1L))
                 .thenReturn(user);
         UserDto result = userServiceImpl.getUserById(1L);
@@ -59,7 +57,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void getUserById_whenUserIsNotPresent_shouldCallUserRepository_andThrowNotFoundException() {
+    void getUserById_whenUserIsNotPresent_shouldInvokeUserRepository_andThrowNotFoundException() {
         when(userRepository.getUserById(1L))
                 .thenThrow(new NotFoundException("There's no user with id 1"));
         NotFoundException notFoundException = assertThrows(NotFoundException.class,
@@ -68,7 +66,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void postUser_whenCalled_shouldCallUserRepository_andReturnUser() {
+    void postUser_whenInvoke_shouldInvokeUserRepository_andReturnUser() {
         when(userRepository.save(user))
                 .thenReturn(user);
         UserDto result = userServiceImpl.postUser(userDto);
@@ -78,7 +76,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void patchUserById_whenCalled_shouldCallUserRepository_andReturnUpdatedUser() {
+    void patchUserById_whenInvoke_shouldInvokeUserRepository_andReturnUpdatedUser() {
         User oldUser = new User(
                 1L,
                 "Old name",
@@ -98,7 +96,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void deleteUserById_whenCalled_shouldCallUserRepositoryMethod() {
+    void deleteUserById_whenInvoke_shouldInvokeUserRepositoryMethod() {
         userServiceImpl.deleteUserById(1L);
         verify(userRepository).deleteById(1L);
     }

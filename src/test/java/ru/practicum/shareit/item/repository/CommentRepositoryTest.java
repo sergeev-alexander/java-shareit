@@ -29,7 +29,6 @@ class CommentRepositoryTest {
 
     @Autowired
     private ItemRepository itemRepository;
-
     private User user;
     private User author;
     private Item item;

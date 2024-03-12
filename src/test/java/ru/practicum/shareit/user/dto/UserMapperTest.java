@@ -11,7 +11,6 @@ class UserMapperTest {
             1L,
             "Some name",
             "some@email.com");
-
     private final UserDto userDto = new UserDto(
             1L,
             "Some name",

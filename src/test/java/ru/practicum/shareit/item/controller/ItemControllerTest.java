@@ -105,7 +105,7 @@ class ItemControllerTest {
 
     @Test
     @SneakyThrows
-    void getItemById_whenValidRequestHeaderAndItemId_shouldCallItemServiceMethod() {
+    void getItemById_whenValidRequestHeaderAndItemId_shouldInvokeItemServiceMethod() {
         OutgoingItemDto outgoingItemDto = new OutgoingItemDto(
                 1L,
                 "Item name",
@@ -158,7 +158,7 @@ class ItemControllerTest {
 
     @Test
     @SneakyThrows
-    void getItemsBySearch_whenValidRequestHeaderAndUserId_shouldCallItemServiceMethod() {
+    void getItemsBySearch_whenValidRequestHeaderAndUserId_shouldInvokeItemServiceMethod() {
         OutgoingItemDto outgoingItemDto = new OutgoingItemDto(
                 1L,
                 "Item name",
@@ -193,7 +193,7 @@ class ItemControllerTest {
 
     @Test
     @SneakyThrows
-    void postItem_whenValidItemAndRequestHeader_shouldCallItemServiceMethod() {
+    void postItem_whenValidItemAndRequestHeader_shouldInvokeItemServiceMethod() {
         IncomingItemDto incomingItemDto = new IncomingItemDto(
                 "Some Name",
                 "Some description",
@@ -274,7 +274,7 @@ class ItemControllerTest {
 
     @Test
     @SneakyThrows
-    void postComment_whenValidComment_shouldCallItemServiceMethod() {
+    void postComment_whenValidComment_shouldInvokeItemServiceMethod() {
         IncomingCommentDto incomingCommentDto = new IncomingCommentDto(
                 null,
                 "Some text");
@@ -337,7 +337,7 @@ class ItemControllerTest {
 
     @Test
     @SneakyThrows
-    void patchItemById_whenValidItem_shouldCallItemServiceMethod() {
+    void patchItemById_whenValidItem_shouldInvokeItemServiceMethod() {
         IncomingItemDto incomingItemDto = new IncomingItemDto(
                 "Some name",
                 "Some description",
@@ -414,7 +414,7 @@ class ItemControllerTest {
 
     @Test
     @SneakyThrows
-    void deleteItemById_whenValidItemId_shouldCallItemServiceMethod() {
+    void deleteItemById_whenValidItemId_shouldInvokeItemServiceMethod() {
         mockMvc.perform(delete("/items/{id}", 1)
                 .header(header, 1))
                 .andExpect(status().isOk());

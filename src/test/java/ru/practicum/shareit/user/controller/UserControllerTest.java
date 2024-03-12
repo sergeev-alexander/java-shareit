@@ -40,7 +40,7 @@ class UserControllerTest {
 
     @Test
     @SneakyThrows
-    void getAllUsers_whenValidFromAndSize_shouldCallUserServiceMethod_andStatusIsOk() {
+    void getAllUsers_whenValidFromAndSize_shouldInvokeUserServiceMethod_andReturnUser() {
         UserDto userDto = new UserDto(
                 null,
                 "Name",
@@ -55,11 +55,13 @@ class UserControllerTest {
 
     @Test
     @SneakyThrows
-    void getAllUsers_whenNegativeFromAndNegativeSize_shouldNotCallUserServiceMethod_andThrowConstraintViolationException() {
+    void getAllUsers_whenNegativeFromAndNegativeSize_shouldNotInvokeUserServiceMethod_andThrowConstraintViolationException() {
         mockMvc.perform(get("/users?from=-1"))
                 .andExpect(status().isBadRequest())
-                .andExpect(result -> assertTrue(result.getResolvedException() instanceof ConstraintViolationException))
-                .andExpect(result -> assertEquals("getAllUsers.firstElement: must be greater than or equal to 0",
+                .andExpect(result -> assertTrue(result.getResolvedException()
+                        instanceof ConstraintViolationException))
+                .andExpect(result -> assertEquals("getAllUsers.firstElement: " +
+                                "must be greater than or equal to 0",
                         result.getResolvedException().getMessage()))
                 .andExpect(content().string("{\"error\":\"must be greater than or equal to 0\"}"));
         verifyNoInteractions(userService);
@@ -67,11 +69,13 @@ class UserControllerTest {
 
     @Test
     @SneakyThrows
-    void getAllUsers_whenLessThan1Size_shouldNotCallUserServiceMethod_andThrowConstraintViolationException() {
+    void getAllUsers_whenLessThan1Size_shouldNotInvokeUserServiceMethod_andThrowConstraintViolationException() {
         mockMvc.perform(get("/users?size=-1"))
                 .andExpect(status().isBadRequest())
-                .andExpect(result -> assertTrue(result.getResolvedException() instanceof ConstraintViolationException))
-                .andExpect(result -> assertEquals("getAllUsers.size: must be greater than or equal to 1",
+                .andExpect(result -> assertTrue(result.getResolvedException()
+                        instanceof ConstraintViolationException))
+                .andExpect(result -> assertEquals("getAllUsers.size: " +
+                                "must be greater than or equal to 1",
                         result.getResolvedException().getMessage()))
                 .andExpect(content().string("{\"error\":\"must be greater than or equal to 1\"}"));
         verifyNoInteractions(userService);
@@ -79,11 +83,13 @@ class UserControllerTest {
 
     @Test
     @SneakyThrows
-    void getAllUsers_whenGreaterThen20Size_shouldNotCallUserServiceMethod_andThrowConstraintViolationException() {
+    void getAllUsers_whenGreaterThen20Size_shouldNotInvokeUserServiceMethod_andThrowConstraintViolationException() {
         mockMvc.perform(get("/users?size=21"))
                 .andExpect(status().isBadRequest())
-                .andExpect(result -> assertTrue(result.getResolvedException() instanceof ConstraintViolationException))
-                .andExpect(result -> assertEquals("getAllUsers.size: must be less than or equal to 20",
+                .andExpect(result -> assertTrue(result.getResolvedException()
+                        instanceof ConstraintViolationException))
+                .andExpect(result -> assertEquals("getAllUsers.size: " +
+                                "must be less than or equal to 20",
                         result.getResolvedException().getMessage()))
                 .andExpect(content().string("{\"error\":\"must be less than or equal to 20\"}"));
         verifyNoInteractions(userService);
@@ -91,7 +97,7 @@ class UserControllerTest {
 
     @Test
     @SneakyThrows
-    void getUserById_whenValidId_shouldCallUserServiceMethod_andStatusIsOk() {
+    void getUserById_whenValidId_shouldInvokeUserServiceMethod() {
         UserDto userDto = new UserDto(
                 1L,
                 "Name",
@@ -106,11 +112,13 @@ class UserControllerTest {
 
     @Test
     @SneakyThrows
-    void getUserById_whenNegativeId_shouldNotCallUserServiceMethod_andThrowConstraintViolationException() {
+    void getUserById_whenNegativeId_shouldNotInvokeUserServiceMethod_andThrowConstraintViolationException() {
         mockMvc.perform(get("/users/{id}", -1))
                 .andExpect(status().isBadRequest())
-                .andExpect(result -> assertTrue(result.getResolvedException() instanceof ConstraintViolationException))
-                .andExpect(result -> assertEquals("getUserById.userId: must be greater than 0",
+                .andExpect(result -> assertTrue(result.getResolvedException()
+                        instanceof ConstraintViolationException))
+                .andExpect(result -> assertEquals("getUserById.userId: " +
+                                "must be greater than 0",
                         result.getResolvedException().getMessage()))
                 .andExpect(content().string("{\"error\":\"must be greater than 0\"}"));
         verifyNoInteractions(userService);
@@ -118,7 +126,7 @@ class UserControllerTest {
 
     @Test
     @SneakyThrows
-    void postUser_whenValidUser_shouldCallUserServiceMethod() {
+    void postUser_whenValidUser_shouldInvokeUserServiceMethod() {
         UserDto userDto = new UserDto(
                 null,
                 "Name",
@@ -135,7 +143,7 @@ class UserControllerTest {
 
     @Test
     @SneakyThrows
-    void postUser_whenNotValidUser_shouldNotCallUserServiceMethod_andThrowMethodArgumentNotValidException() {
+    void postUser_whenNotValidUser_shouldNotInvokeUserServiceMethod_andThrowMethodArgumentNotValidException() {
         UserDto userDto = new UserDto(
                 123L,
                 "",
@@ -145,7 +153,8 @@ class UserControllerTest {
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(result -> assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException))
+                .andExpect(result -> assertTrue(result.getResolvedException()
+                        instanceof MethodArgumentNotValidException))
                 .andExpect(content().string(containsString("\"name\":\"User name field is blank!" +
                         "\",\"id\":\"Creating user already has an id!\",\"email\":\"Wrong email format!\"")));
         verifyNoInteractions(userService);
@@ -153,7 +162,7 @@ class UserControllerTest {
 
     @Test
     @SneakyThrows
-    void patchUserById_whenValidUser_shouldCallUserServiceMethod() {
+    void patchUserById_whenValidUser_shouldInvokeUserServiceMethod() {
         UserDto userDto = new UserDto(
                 null,
                 "Name",
@@ -171,7 +180,7 @@ class UserControllerTest {
 
     @Test
     @SneakyThrows
-    void patchUserById_whenNegativeUserId_shouldNotCallUserServiceMethod_andThrowConstraintViolationException() {
+    void patchUserById_whenNegativeUserId_shouldNotInvokeUserServiceMethod_andThrowConstraintViolationException() {
         UserDto userDto = new UserDto(
                 null,
                 "Name",
@@ -181,8 +190,10 @@ class UserControllerTest {
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(result -> assertTrue(result.getResolvedException() instanceof ConstraintViolationException))
-                .andExpect(result -> assertEquals("patchUserById.userId: must be greater than 0",
+                .andExpect(result -> assertTrue(result.getResolvedException()
+                        instanceof ConstraintViolationException))
+                .andExpect(result -> assertEquals("patchUserById.userId: " +
+                                "must be greater than 0",
                         result.getResolvedException().getMessage()))
                 .andExpect(content().string("{\"error\":\"must be greater than 0\"}"));
         verifyNoInteractions(userService);
@@ -190,7 +201,7 @@ class UserControllerTest {
 
     @Test
     @SneakyThrows
-    void patchUserById_whenNotValidUser_shouldNotCallUserServiceMethod_andThrowMethodArgumentNotValidException() {
+    void patchUserById_whenNotValidUser_shouldNotInvokeUserServiceMethod_andThrowMethodArgumentNotValidException() {
         UserDto userDto = new UserDto(
                 null,
                 null,
@@ -200,14 +211,15 @@ class UserControllerTest {
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(result -> assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException))
+                .andExpect(result -> assertTrue(result.getResolvedException()
+                        instanceof MethodArgumentNotValidException))
                 .andExpect(content().string("{\"email\":\"Wrong email format!\"}"));
         verifyNoInteractions(userService);
     }
 
     @Test
     @SneakyThrows
-    void deleteUserById_whenValidUserId_shouldCallUserServiceMethod() {
+    void deleteUserById_whenValidUserId_shouldInvokeUserServiceMethod() {
         mockMvc.perform(delete("/users/{id}", 1))
                 .andExpect(status().isOk());
         verify(userService, times(1)).deleteUserById(1L);
@@ -215,11 +227,13 @@ class UserControllerTest {
 
     @Test
     @SneakyThrows
-    void deleteUserById_whenNegativeUserId_shouldNotCallUserServiceMethod_andThrowConstraintViolationException() {
+    void deleteUserById_whenNegativeUserId_shouldNotInvokeUserServiceMethod_andThrowConstraintViolationException() {
         mockMvc.perform(delete("/users/{id}", -1))
                 .andExpect(status().isBadRequest())
-                .andExpect(result -> assertTrue(result.getResolvedException() instanceof ConstraintViolationException))
-                .andExpect(result -> assertEquals("deleteUserById.userId: must be greater than 0",
+                .andExpect(result -> assertTrue(result.getResolvedException()
+                        instanceof ConstraintViolationException))
+                .andExpect(result -> assertEquals("deleteUserById.userId: " +
+                                "must be greater than 0",
                         result.getResolvedException().getMessage()))
                 .andExpect(content().string("{\"error\":\"must be greater than 0\"}"));
         verifyNoInteractions(userService);

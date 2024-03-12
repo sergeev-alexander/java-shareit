@@ -43,10 +43,8 @@ class RequestControllerTest {
 
     @MockBean
     private RequestService requestService;
-
     private final String header = "X-Sharer-User-Id";
     private final Sort sortByCreatingDesc = Sort.by(Sort.Direction.DESC, "created");
-
     private OutgoingRequestDto outgoingRequestDto;
 
     @BeforeEach
@@ -61,7 +59,7 @@ class RequestControllerTest {
 
     @Test
     @SneakyThrows
-    void getAllRequesterRequests_whenCall_shouldCallRequestServiceMethod() {
+    void getAllRequesterRequests_whenInvoke_shouldInvokeRequestServiceMethod() {
         when(requestService.getAllRequesterRequests(1L,
                 PageRequest.of(0, 20, sortByCreatingDesc)))
                 .thenReturn(List.of(outgoingRequestDto));
@@ -75,7 +73,7 @@ class RequestControllerTest {
 
     @Test
     @SneakyThrows
-    void getAllRequesterRequests_whenWrongHeader_shouldNotCallRequestServiceMethod_andThrowMissingRequestHeaderException() {
+    void getAllRequesterRequests_whenWrongHeader_shouldNotInvokeRequestServiceMethod_andThrowMissingRequestHeaderException() {
         mockMvc.perform(get("/requests")
                         .header("WRONG-HEADER", "WRONG-VALUE"))
                 .andExpect(status().isBadRequest())
@@ -109,7 +107,7 @@ class RequestControllerTest {
 
     @Test
     @SneakyThrows
-    void getAllRequests_whenCall_shouldCallRequestServiceMethod() {
+    void getAllRequests_whenInvoke_shouldInvokeRequestServiceMethod() {
         when(requestService.getAllRequests(1L, PageRequest.of(0, 20, sortByCreatingDesc)))
                 .thenReturn(List.of(outgoingRequestDto));
         mockMvc.perform(get("/requests/all")
@@ -156,7 +154,7 @@ class RequestControllerTest {
 
     @Test
     @SneakyThrows
-    void getRequestById_whenCall_shouldCallRequestServiceMethod() {
+    void getRequestById_whenInvoke_shouldInvokeRequestServiceMethod() {
         when(requestService.getRequestById(1L, 1L))
                 .thenReturn(outgoingRequestDto);
         mockMvc.perform(get("/requests/{id}", 1)
@@ -182,7 +180,7 @@ class RequestControllerTest {
 
     @Test
     @SneakyThrows
-    void postRequest_whenCall_shouldCallRequestServiceMethod() {
+    void postRequest_whenInvoke_shouldInvokeRequestServiceMethod() {
         IncomingRequestDto incomingRequestDto = new IncomingRequestDto(
                 null,
                 "Some description");

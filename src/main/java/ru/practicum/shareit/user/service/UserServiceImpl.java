@@ -9,7 +9,7 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import javax.transaction.Transactional;
-import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Transactional
@@ -21,7 +21,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public Collection<UserDto> getAllUsers(Pageable pageable) {
+    public List<UserDto> getAllUsers(Pageable pageable) {
         return userRepository.findBy(pageable)
                 .stream()
                 .map(UserMapper::mapUserToDto)

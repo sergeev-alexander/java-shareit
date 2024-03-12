@@ -29,7 +29,6 @@ class ItemMapperTest {
         assertEquals(item.getRequest().getId(), result.getRequestId());
     }
 
-
     @Test
     void mapIncomingDtoToItem() {
         IncomingItemDto incomingItemDto = new IncomingItemDto(

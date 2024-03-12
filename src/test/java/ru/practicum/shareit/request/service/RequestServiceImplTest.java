@@ -69,7 +69,7 @@ class RequestServiceImplTest {
             "Request description");
 
     @Test
-    void getAllRequesterRequests_whenCall_shouldCallRepositoriesMethods() {
+    void getAllRequesterRequests_whenInvoke_shouldInvokeRepositoriesMethods() {
         when(requestRepository.findByRequesterId(2L, pageable))
                 .thenReturn(List.of(request));
         when(itemRepository.findByRequestIdIn(List.of(1L)))
@@ -86,7 +86,7 @@ class RequestServiceImplTest {
     }
 
     @Test
-    void getAllRequests_whenCall_shouldCallRepositoryMethods() {
+    void getAllRequests_whenInvoke_shouldInvokeRepositoryMethods() {
         when(requestRepository.findByRequesterIdIsNot(1L, pageable))
                 .thenReturn(List.of(request));
         when(itemRepository.findByRequestIdIn(List.of(1L)))
@@ -103,7 +103,7 @@ class RequestServiceImplTest {
     }
 
     @Test
-    void getRequestById_whenCall_shouldCallRepositoryMethods() {
+    void getRequestById_whenInvoke_shouldInvokeRepositoryMethods() {
         when(requestRepository.findRequestById(1L))
                 .thenReturn(request);
         when(itemRepository.findByRequestId(1L))
@@ -119,7 +119,7 @@ class RequestServiceImplTest {
     }
 
     @Test
-    void postRequest_whenCall_shouldCallRepositoryMethods() {
+    void postRequest_whenInvoke_shouldInvokeRepositoryMethods() {
         when(userRepository.getUserById(2L))
                 .thenReturn(requester);
         when(requestRepository.save(any(Request.class)))

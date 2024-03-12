@@ -28,11 +28,8 @@ class RequestRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
-
     private Request request;
-
     private User user;
-
     private final Sort sortByCreatingDesc = Sort.by(Sort.Direction.DESC, "created");
 
     @BeforeEach

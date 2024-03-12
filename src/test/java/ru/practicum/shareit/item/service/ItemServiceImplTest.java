@@ -10,7 +10,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import ru.practicum.shareit.booking.dto.BookingMapper;
-import ru.practicum.shareit.booking.dto.LastNextBookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.repository.BookingRepository;
@@ -119,12 +118,12 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void getAllOwnerItems_whenCall_shouldCallRepositoryMethods_andReturnItemList() {
+    void getAllOwnerItems_whenInvoke_shouldInvokeRepositoryMethods_andReturnItemList() {
         when(itemRepository.findByOwnerId(1L, pageable))
                 .thenReturn(List.of(item));
         when(commentRepository.findByItemIdIn(List.of(1L)))
                 .thenReturn(List.of(comment));
-        when(bookingRepository.findByItemIdIn(List.of(1L), Booking.class, pageable))
+        when(bookingRepository.findByItemIdIn(List.of(1L), pageable))
                 .thenReturn(List.of(lastBooking, nextBooking));
         OutgoingItemDto outgoingItemDto = ItemMapper.mapItemToOutgoingDto(item);
         outgoingItemDto.setLastBooking(BookingMapper.mapBookingToLastNextDto(lastBooking));
@@ -137,21 +136,19 @@ class ItemServiceImplTest {
         assertEquals(expected, result);
         verify(userRepository).checkUserById(1L);
         verify(itemRepository).findByOwnerId(1L, pageable);
-        verify(bookingRepository).findByItemIdIn(List.of(1L), Booking.class, pageable);
+        verify(bookingRepository).findByItemIdIn(List.of(1L), pageable);
     }
 
     @Test
-    void getItemDtoById_whenOwnerCall_shouldCallRepositoryMethods_andReturnItem() {
+    void getItemDtoById_whenOwnerInvoke_shouldInvokeRepositoryMethods_andReturnItem() {
         when(itemRepository.getItemById(1L))
                 .thenReturn(item);
-        LastNextBookingDto lastBookingDto = BookingMapper.mapBookingToLastNextDto(lastBooking);
         when(bookingRepository.findFirstByItemIdAndStartIsBeforeAndStatusIs(anyLong(), any(LocalDateTime.class),
                 any(BookingStatus.class), any(Sort.class)))
-                .thenReturn(Optional.of(lastBookingDto));
-        LastNextBookingDto nextBookingDto = BookingMapper.mapBookingToLastNextDto(nextBooking);
+                .thenReturn(Optional.of(lastBooking));
         when(bookingRepository.findFirstByItemIdAndStartIsAfterAndStatusIs(anyLong(), any(LocalDateTime.class),
                 any(BookingStatus.class), any(Sort.class)))
-                .thenReturn(Optional.of(nextBookingDto));
+                .thenReturn(Optional.of(nextBooking));
         when(commentRepository.findByItemId(1L))
                 .thenReturn(List.of(comment));
         OutgoingItemDto expected = ItemMapper.mapItemToOutgoingDto(item);
@@ -171,7 +168,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void getItemDtoById_whenNotOwnerCall_shouldCallRepositoryMethods_andReturnItem() {
+    void getItemDtoById_whenNotOwnerInvoke_shouldInvokeRepositoryMethods_andReturnItem() {
         when(itemRepository.getItemById(1L))
                 .thenReturn(item);
         when(commentRepository.findByItemId(1L))
@@ -187,7 +184,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void getItemsBySearch_whenCall_shouldCallRepositoryMethods_andReturnItemList() {
+    void getItemsBySearch_whenInvoke_shouldInvokeRepositoryMethods_andReturnItemList() {
         when(itemRepository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailableIsTrue(
                 "Item name", "Item name", pageable))
                 .thenReturn(List.of(item));
@@ -206,7 +203,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void getItemsBySearch_whenBlankText_shouldNotCallRepositoryMethods_andReturnEmptyList() {
+    void getItemsBySearch_whenBlankText_shouldNotInvokeRepositoryMethods_andReturnEmptyList() {
         List<OutgoingItemDto> result = itemServiceImp.getItemsBySearch(1L, "", pageable);
         assertNotNull(result);
         assertTrue(result.isEmpty());
@@ -215,7 +212,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void postItem_whenRequestIdIsPresent_shouldCallRepositoryMethods_andReturnItemWithRequest() {
+    void postItem_whenRequestIdIsPresent_shouldInvokeRepositoryMethods_andReturnItemWithRequest() {
         IncomingItemDto incomingItemDto = new IncomingItemDto(
                 "Item name",
                 "Item description",
@@ -238,7 +235,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void postItem_whenRequestIdIsNotPresent_shouldCallRepositoryMethods_andReturnItemWithoutRequest() {
+    void postItem_whenRequestIdIsNotPresent_shouldInvokeRepositoryMethods_andReturnItemWithoutRequest() {
         IncomingItemDto incomingItemDto = new IncomingItemDto(
                 "Item name",
                 "Item description",
@@ -259,7 +256,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void postComment_whenCall_shouldCallRepositoryMethods_andReturnComment() {
+    void postComment_whenInvoke_shouldInvokeRepositoryMethods_andReturnComment() {
         IncomingCommentDto incomingCommentDto = new IncomingCommentDto(
                 null,
                 "Comment text");
@@ -294,7 +291,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void patchItemById_whenCall_shouldCallRepositoryMethods_andReturnUpdatedItem() {
+    void patchItemById_whenInvoke_shouldInvokeRepositoryMethods_andReturnUpdatedItem() {
         IncomingItemDto incomingItemDto = new IncomingItemDto(
                 "Updated name",
                 "Updated description",
@@ -330,7 +327,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void deleteItemById_whenCall_shouldCallRepositoryMethods() {
+    void deleteItemById_whenInvoke_shouldInvokeRepositoryMethods() {
         when(itemRepository.findByIdAndOwnerId(1L, 1L))
                 .thenReturn(Optional.of(item));
         itemServiceImp.deleteItemById(1L, 1L);
@@ -350,20 +347,20 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void deleteAllOwnerItems_whenCall_shouldCallRepositoryMethod() {
+    void deleteAllOwnerItems_whenInvoke_shouldInvokeRepositoryMethod() {
         itemServiceImp.deleteAllOwnerItems(1L);
         verify(itemRepository).deleteByOwnerId(1L);
     }
 
     @Test
-    void getNextBookingByItemId_whenCall_shouldCallRepositoryMethod() {
+    void getNextBookingByItemId_whenInvoke_shouldInvokeRepositoryMethod() {
         itemServiceImp.getNextBookingByItemId(1L);
         verify(bookingRepository).findFirstByItemIdAndStartIsAfterAndStatusIs(anyLong(), any(LocalDateTime.class),
                 any(BookingStatus.class), any(Sort.class));
     }
 
     @Test
-    void getLastBookingByItemId_whenCall_shouldCallRepositoryMethod() {
+    void getLastBookingByItemId_whenInvoke_shouldInvokeRepositoryMethod() {
         itemServiceImp.getLastBookingByItemId(1L);
         verify(bookingRepository).findFirstByItemIdAndStartIsBeforeAndStatusIs(anyLong(), any(LocalDateTime.class),
                 any(BookingStatus.class), any(Sort.class));

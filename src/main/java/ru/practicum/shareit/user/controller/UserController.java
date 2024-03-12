@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Positive;
-import java.util.Collection;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -25,7 +25,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public Collection<UserDto> getAllUsers(
+    public List<UserDto> getAllUsers(
             HttpServletRequest request,
             @RequestParam(value = "from", defaultValue = "0") @Min(0) Integer firstElement,
             @RequestParam(value = "size", defaultValue = "20") @Min(1) @Max(20) Integer size) {

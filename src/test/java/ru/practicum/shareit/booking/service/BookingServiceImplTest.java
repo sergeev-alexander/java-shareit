@@ -52,8 +52,8 @@ class BookingServiceImplTest {
     private Item item;
     private Booking booking;
     private OutgoingBookingDto outgoingBookingDto;
-    private LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-    private Pageable pageable = PageRequest.of(0, 20);
+    private final LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+    private final Pageable pageable = PageRequest.of(0, 20);
 
     @BeforeEach
     void setUp() {
@@ -127,8 +127,7 @@ class BookingServiceImplTest {
         verify(itemRepository).findByOwnerId(anyLong());
         switch (bookingState) {
             case ALL:
-                verify(bookingRepository).findByItemIdIn(anyList(),
-                        any(), any(Pageable.class));
+                verify(bookingRepository).findByItemIdIn(anyList(), any(Pageable.class));
                 break;
             case CURRENT:
                 verify(bookingRepository).findByItemIdInAndStartIsBeforeAndEndIsAfter(anyList(),
@@ -165,22 +164,23 @@ class BookingServiceImplTest {
 
     @Test
     void getBookingById_whenBookingExists_shouldInvokeRepositoryMethods_andReturnBooking() {
-        when(bookingRepository.findById(1L, OutgoingBookingDto.class))
-                .thenReturn(Optional.of(outgoingBookingDto));
+        outgoingBookingDto.setStatus(BookingStatus.WAITING);
+        when(bookingRepository.findById(1L))
+                .thenReturn(Optional.of(booking));
         OutgoingBookingDto result = bookingServiceIml.getBookingById(1L, 1L);
         assertEquals(outgoingBookingDto, result);
-        verify(bookingRepository).findById(1L, OutgoingBookingDto.class);
+        verify(bookingRepository).findById(1L);
     }
 
     @Test
     void getBookingById_whenBookingNotApplicableToUser_shouldThrowNotFoundException() {
-        when(bookingRepository.findById(1L, OutgoingBookingDto.class))
-                .thenReturn(Optional.of(outgoingBookingDto));
+        when(bookingRepository.findById(1L))
+                .thenReturn(Optional.of(booking));
         NotFoundException notFoundException = assertThrows(NotFoundException.class,
                 () -> bookingServiceIml.getBookingById(3L, 1L));
         assertEquals("Requesting booking is not created by user 3 and booking item don't belong to him!",
                 notFoundException.getMessage());
-        verify(bookingRepository).findById(1L, OutgoingBookingDto.class);
+        verify(bookingRepository).findById(1L);
     }
 
     @Test
@@ -246,7 +246,7 @@ class BookingServiceImplTest {
 
     @Test
     void patchBookingById_whenBookingStatusIsWaiting_shouldChangeItAccordingApprovedCondition_andInvokeRepositoryMethods() {
-        when(bookingRepository.findById(1L, Booking.class))
+        when(bookingRepository.findById(1L))
                 .thenReturn(Optional.of(booking));
         when(bookingRepository.save(booking))
                 .thenReturn(booking);
@@ -258,7 +258,7 @@ class BookingServiceImplTest {
     @Test
     void patchBookingById_whenBookingStatusIsNotWaiting_shouldThrowNotAvailableItemException() {
         booking.setStatus(BookingStatus.REJECTED);
-        when(bookingRepository.findById(1L, Booking.class))
+        when(bookingRepository.findById(1L))
                 .thenReturn(Optional.of(booking));
         NotAvailableItemException notAvailableItemException = assertThrows(NotAvailableItemException.class,
                 () -> bookingServiceIml.patchBookingById(1L, 1L, true));
@@ -268,7 +268,7 @@ class BookingServiceImplTest {
 
     @Test
     void patchBookingById_whenBookingItemDoNotBelongToUser_shouldThrowNotFoundException() {
-        when(bookingRepository.findById(1L, Booking.class))
+        when(bookingRepository.findById(1L))
                 .thenReturn(Optional.of(booking));
         NotFoundException notFoundException = assertThrows(NotFoundException.class,
                 () -> bookingServiceIml.patchBookingById(2L, 1L, true));

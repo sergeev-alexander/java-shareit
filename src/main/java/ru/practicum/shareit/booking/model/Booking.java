@@ -1,20 +1,22 @@
 package ru.practicum.shareit.booking.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "bookings")
 @Getter
 @Setter
-@ToString
-@EqualsAndHashCode
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class Booking {
 
     @Id
@@ -38,5 +40,35 @@ public class Booking {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private BookingStatus status;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Booking)) return false;
+        Booking booking = (Booking) o;
+        return Objects.equals(getId(), booking.getId())
+                && Objects.equals(getStart(), booking.getStart())
+                && Objects.equals(getEnd(), booking.getEnd())
+                && Objects.equals(getItem(), booking.getItem())
+                && Objects.equals(getBooker(), booking.getBooker())
+                && getStatus() == booking.getStatus();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getStart(), getEnd(), getItem(), getBooker(), getStatus());
+    }
+
+    @Override
+    public String toString() {
+        return "Booking{" +
+                "id=" + id +
+                ", start=" + start +
+                ", end=" + end +
+                ", item=" + item +
+                ", booker=" + booker +
+                ", status=" + status +
+                '}';
+    }
 
 }
