@@ -24,4 +24,6 @@ public class OutgoingItemDto {
 
     private List<OutgoingCommentDto> comments;
 
+    private Long requestId;
+
 }

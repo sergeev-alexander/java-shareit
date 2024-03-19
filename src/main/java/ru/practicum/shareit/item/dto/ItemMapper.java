@@ -1,11 +1,11 @@
 package ru.practicum.shareit.item.dto;
 
-import org.springframework.stereotype.Component;
+import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
 
-@Component
+@UtilityClass
 public class ItemMapper {
 
     public OutgoingItemDto mapItemToOutgoingDto(Item item) {
@@ -16,7 +16,8 @@ public class ItemMapper {
                 item.getAvailable(),
                 null,
                 null,
-                List.of());
+                List.of(),
+                item.getRequest() == null ? null : item.getRequest().getId());
     }
 
     public Item mapIncomingDtoToItem(IncomingItemDto incomingItemDto) {
@@ -25,6 +26,7 @@ public class ItemMapper {
                 incomingItemDto.getName(),
                 incomingItemDto.getDescription(),
                 incomingItemDto.getAvailable(),
+                null,
                 null);
     }
 

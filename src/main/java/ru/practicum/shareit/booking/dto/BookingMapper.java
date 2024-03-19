@@ -1,10 +1,10 @@
 package ru.practicum.shareit.booking.dto;
 
-import org.springframework.stereotype.Component;
+import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 
-@Component
+@UtilityClass
 public class BookingMapper {
 
     public OutgoingBookingDto mapBookingToOutgoingDto(Booking booking) {

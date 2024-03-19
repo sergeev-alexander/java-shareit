@@ -1,9 +1,8 @@
 package ru.practicum.shareit.booking.repository;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
-import ru.practicum.shareit.booking.dto.LastNextBookingDto;
-import ru.practicum.shareit.booking.dto.OutgoingBookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 
@@ -14,63 +13,60 @@ import java.util.Optional;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
-    <T> List<T> findByBookerId(Long bookerId,
-                               Sort sort,
-                               Class<T> projectionClass);
+    List<Booking> findByBookerId(Long bookerId, Pageable pageable);
 
-    <T> Optional<T> findById(Long bookingId, Class<T> projectionClass);
+    Optional<Booking> findById(Long bookingId);
 
-    List<OutgoingBookingDto> findByBookerIdAndEndIsAfterAndStartIsBefore(Long bookerId,
-                                                                         LocalDateTime now,
-                                                                         LocalDateTime sameNow,
-                                                                         Sort sort);
+    List<Booking> findByBookerIdAndEndIsAfterAndStartIsBefore(Long bookerId,
+                                                              LocalDateTime now,
+                                                              LocalDateTime sameNow,
+                                                              Pageable pageable);
 
-    List<OutgoingBookingDto> findByBookerIdAndEndIsBefore(Long bookerId,
-                                                          LocalDateTime now,
-                                                          Sort sort);
+    List<Booking> findByBookerIdAndEndIsBefore(Long bookerId,
+                                               LocalDateTime now,
+                                               Pageable pageable);
 
-    List<OutgoingBookingDto> findByBookerIdAndStartIsAfter(Long bookerId,
-                                                           LocalDateTime now,
-                                                           Sort sort);
+    List<Booking> findByBookerIdAndStartIsAfter(Long bookerId,
+                                                LocalDateTime now,
+                                                Pageable pageable);
 
-    List<OutgoingBookingDto> findByBookerIdAndStatusIs(Long bookerId,
-                                                       BookingStatus status,
-                                                       Sort sort);
+    List<Booking> findByBookerIdAndStatusIs(Long bookerId,
+                                            BookingStatus status,
+                                            Pageable pageable);
 
-    <T> List<T> findByItemIdIn(Collection<Long> ownerItemsIdList,
-                               Sort sort,
-                               Class<T> projectionClass);
+    List<Booking> findByItemIdIn(Collection<Long> ownerItemsIdList,
+                                 Pageable pageable);
 
-    List<OutgoingBookingDto> findByItemIdInAndStartIsBeforeAndEndIsAfter(List<Long> ownerItemIdList,
-                                                                         LocalDateTime now,
-                                                                         LocalDateTime sameNow,
-                                                                         Sort sort);
+    List<Booking> findByItemIdInAndStartIsBeforeAndEndIsAfter(List<Long> ownerItemIdList,
+                                                              LocalDateTime now,
+                                                              LocalDateTime sameNow,
+                                                              Pageable pageable);
 
-    List<OutgoingBookingDto> findByItemIdInAndEndIsBefore(List<Long> ownerItemIdList,
-                                                          LocalDateTime now,
-                                                          Sort sort);
+    List<Booking> findByItemIdInAndEndIsBefore(List<Long> ownerItemIdList,
+                                               LocalDateTime now,
+                                               Pageable pageable);
 
-    List<OutgoingBookingDto> findByItemIdInAndStartIsAfter(List<Long> ownerItemIdList,
-                                                           LocalDateTime now,
-                                                           Sort sort);
+    List<Booking> findByItemIdInAndStartIsAfter(List<Long> ownerItemIdList,
+                                                LocalDateTime now,
+                                                Pageable pageable);
 
-    List<OutgoingBookingDto> findByItemIdInAndStatusIs(List<Long> ownerItemIdList,
-                                                       BookingStatus status,
-                                                       Sort sort);
+    List<Booking> findByItemIdInAndStatusIs(List<Long> ownerItemIdList,
+                                            BookingStatus status,
+                                            Pageable pageable);
 
-    Optional<LastNextBookingDto> findFirstByItemIdAndStartIsAfterAndStatusIs(Long itemId,
-                                                                             LocalDateTime now,
-                                                                             BookingStatus bookingStatus,
-                                                                             Sort sort);
+    Optional<Booking> findFirstByItemIdAndStartIsAfterAndStatusIs(Long itemId,
+                                                                  LocalDateTime now,
+                                                                  BookingStatus bookingStatus,
+                                                                  Sort sort);
 
-    Optional<LastNextBookingDto> findFirstByItemIdAndStartIsBeforeAndStatusIs(Long itemId,
-                                                                              LocalDateTime now,
-                                                                              BookingStatus bookingStatus,
-                                                                              Sort sort);
+    Optional<Booking> findFirstByItemIdAndStartIsBeforeAndStatusIs(Long itemId,
+                                                                   LocalDateTime now,
+                                                                   BookingStatus bookingStatus,
+                                                                   Sort sort);
 
-    Boolean existsByBookerIdAndItemIdAndEndIsBeforeAndStatusIs(Long authorId,
-                                                             Long itemId,
-                                                             LocalDateTime now,
-                                                             BookingStatus bookingStatus);
+    Boolean existsByBookerIdAndItemIdAndEndIsBeforeAndStatusIs(Long bookerId,
+                                                               Long itemId,
+                                                               LocalDateTime now,
+                                                               BookingStatus bookingStatus);
 
 }
