@@ -180,14 +180,14 @@ public class ItemServiceImpl implements ItemService {
         itemRepository.deleteByOwnerId(ownerId);
     }
 
-    LastNextBookingDto getNextBookingByItemId(Long itemId) {
+    protected LastNextBookingDto getNextBookingByItemId(Long itemId) {
         Booking booking = bookingRepository
                 .findFirstByItemIdAndStartIsAfterAndStatusIs(itemId, LocalDateTime.now(),
                         BookingStatus.APPROVED, Sort.by(Sort.Direction.ASC, "start")).orElse(null);
         return booking == null ? null : BookingMapper.mapBookingToLastNextDto(booking);
     }
 
-    LastNextBookingDto getLastBookingByItemId(Long itemId) {
+    protected LastNextBookingDto getLastBookingByItemId(Long itemId) {
         Booking booking = bookingRepository
                 .findFirstByItemIdAndStartIsBeforeAndStatusIs(itemId, LocalDateTime.now(),
                         BookingStatus.APPROVED, Sort.by(Sort.Direction.DESC, "end")).orElse(null);
