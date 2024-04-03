@@ -10,10 +10,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.practicum.shareit.comment.dto.IncomingCommentDto;
+import ru.practicum.shareit.comment.dto.OutgoingCommentDto;
 import ru.practicum.shareit.exeption.ExceptionResolver;
-import ru.practicum.shareit.item.dto.IncomingCommentDto;
 import ru.practicum.shareit.item.dto.IncomingItemDto;
-import ru.practicum.shareit.item.dto.OutgoingCommentDto;
 import ru.practicum.shareit.item.dto.OutgoingItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 

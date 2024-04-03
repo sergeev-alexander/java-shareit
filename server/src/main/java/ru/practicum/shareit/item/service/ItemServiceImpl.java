@@ -10,10 +10,15 @@ import ru.practicum.shareit.booking.dto.LastNextBookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.comment.dto.CommentMapper;
+import ru.practicum.shareit.comment.dto.IncomingCommentDto;
+import ru.practicum.shareit.comment.dto.OutgoingCommentDto;
+import ru.practicum.shareit.comment.model.Comment;
 import ru.practicum.shareit.exeption.NotAvailableItemException;
 import ru.practicum.shareit.exeption.NotFoundException;
-import ru.practicum.shareit.item.dto.*;
-import ru.practicum.shareit.item.model.Comment;
+import ru.practicum.shareit.item.dto.IncomingItemDto;
+import ru.practicum.shareit.item.dto.ItemMapper;
+import ru.practicum.shareit.item.dto.OutgoingItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
@@ -102,9 +107,6 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<OutgoingItemDto> getItemsBySearch(Long userId, String text, Pageable pageable) {
         userRepository.checkUserById(userId);
-        if (text.isBlank()) {
-            return List.of();
-        }
         List<Item> itemList =
                 itemRepository.searchByTextInNameOrDescriptionAndAvailableTrue(
                         text.toLowerCase(), text.toLowerCase(), pageable);

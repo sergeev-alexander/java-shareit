@@ -1,7 +1,10 @@
 package ru.practicum.shareit.item.dto;
 
 import org.junit.jupiter.api.Test;
-import ru.practicum.shareit.item.model.Comment;
+import ru.practicum.shareit.comment.dto.CommentMapper;
+import ru.practicum.shareit.comment.dto.IncomingCommentDto;
+import ru.practicum.shareit.comment.dto.OutgoingCommentDto;
+import ru.practicum.shareit.comment.model.Comment;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;

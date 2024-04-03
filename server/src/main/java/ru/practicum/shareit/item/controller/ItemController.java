@@ -5,9 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.item.dto.IncomingCommentDto;
+import ru.practicum.shareit.comment.dto.IncomingCommentDto;
+import ru.practicum.shareit.comment.dto.OutgoingCommentDto;
 import ru.practicum.shareit.item.dto.IncomingItemDto;
-import ru.practicum.shareit.item.dto.OutgoingCommentDto;
 import ru.practicum.shareit.item.dto.OutgoingItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 

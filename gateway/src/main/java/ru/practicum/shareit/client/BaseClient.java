@@ -8,6 +8,8 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 import java.util.Map;
 
+import static ru.practicum.shareit.http.HttpHeader.header;
+
 public class BaseClient {
     protected final RestTemplate rest;
 
@@ -95,7 +97,7 @@ public class BaseClient {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
         if (userId != null) {
-            headers.set("X-Sharer-User-Id", String.valueOf(userId));
+            headers.set(header, String.valueOf(userId));
         }
         return headers;
     }

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.shareit.client.BaseClient;
-import ru.practicum.shareit.item.dto.IncomingCommentDto;
+import ru.practicum.shareit.comment.dto.IncomingCommentDto;
 import ru.practicum.shareit.item.dto.IncomingItemDto;
 
 import java.util.Map;
@@ -19,7 +19,7 @@ public class ItemClient extends BaseClient {
     private static final String API_PREFIX = "/items";
 
     @Autowired
-    public ItemClient(@Value("http://server:9090") String serverUrl, RestTemplateBuilder builder) {
+    public ItemClient(@Value("${shareit-server.url}") String serverUrl, RestTemplateBuilder builder) {
         super(
                 builder
                         .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl + API_PREFIX))

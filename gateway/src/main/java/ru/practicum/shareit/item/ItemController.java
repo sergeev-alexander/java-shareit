@@ -2,10 +2,12 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.item.dto.IncomingCommentDto;
+import ru.practicum.shareit.comment.dto.IncomingCommentDto;
 import ru.practicum.shareit.item.dto.IncomingItemDto;
 import ru.practicum.shareit.validation.ValidationMarker;
 
@@ -14,11 +16,12 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
+import java.util.Collections;
 
 import static ru.practicum.shareit.http.HttpHeader.header;
 
 @Slf4j
-@RestController
+@Controller
 @RequestMapping("/items")
 @Validated
 @RequiredArgsConstructor
@@ -53,6 +56,7 @@ public class ItemController {
             @RequestHeader(header) @Positive Long userId,
             @RequestParam(value = "text") String text) {
         log.info("Id-{} {} {}?{}", userId, request.getMethod(), request.getRequestURI(), request.getQueryString());
+        if (text.isBlank()) return new ResponseEntity<>(Collections.EMPTY_LIST, HttpStatus.OK);
         return itemClient.getItemsBySearch(from, size, userId, text);
     }
 

@@ -19,7 +19,6 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-
     @Override
     public List<UserDto> getAllUsers(Pageable pageable) {
         return userRepository.findBy(pageable)

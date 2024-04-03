@@ -27,7 +27,8 @@
 	<modules>
 		<module>gateway</module>
 		<module>server</module>
-	</modules>
+        <module>model</module>
+    </modules>
 
 	<build>
 		<pluginManagement>

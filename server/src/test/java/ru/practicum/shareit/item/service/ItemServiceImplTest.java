@@ -13,10 +13,15 @@ import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.comment.dto.CommentMapper;
+import ru.practicum.shareit.comment.dto.IncomingCommentDto;
+import ru.practicum.shareit.comment.dto.OutgoingCommentDto;
+import ru.practicum.shareit.comment.model.Comment;
 import ru.practicum.shareit.exeption.NotAvailableItemException;
 import ru.practicum.shareit.exeption.NotFoundException;
-import ru.practicum.shareit.item.dto.*;
-import ru.practicum.shareit.item.model.Comment;
+import ru.practicum.shareit.item.dto.IncomingItemDto;
+import ru.practicum.shareit.item.dto.ItemMapper;
+import ru.practicum.shareit.item.dto.OutgoingItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
@@ -33,7 +38,8 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ItemServiceImplTest {
@@ -200,15 +206,6 @@ class ItemServiceImplTest {
         verify(itemRepository).searchByTextInNameOrDescriptionAndAvailableTrue(
                 "item name", "item name", pageable);
         verify(commentRepository).findByItemIdIn(List.of(1L));
-    }
-
-    @Test
-    void getItemsBySearch_whenBlankText_shouldNotInvokeRepositoryMethods_andReturnEmptyList() {
-        List<OutgoingItemDto> result = itemServiceImp.getItemsBySearch(1L, "", pageable);
-        assertNotNull(result);
-        assertTrue(result.isEmpty());
-        verifyNoInteractions(itemRepository);
-        verifyNoInteractions(commentRepository);
     }
 
     @Test

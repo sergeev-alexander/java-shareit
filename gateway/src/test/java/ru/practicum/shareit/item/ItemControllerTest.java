@@ -13,10 +13,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
+import ru.practicum.shareit.comment.dto.IncomingCommentDto;
+import ru.practicum.shareit.comment.dto.OutgoingCommentDto;
 import ru.practicum.shareit.exeption.ExceptionResolver;
-import ru.practicum.shareit.item.dto.IncomingCommentDto;
 import ru.practicum.shareit.item.dto.IncomingItemDto;
-import ru.practicum.shareit.item.dto.OutgoingCommentDto;
 import ru.practicum.shareit.item.dto.OutgoingItemDto;
 
 import javax.validation.ConstraintViolationException;
