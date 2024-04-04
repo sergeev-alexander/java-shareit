@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>shareit-model</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>${project.version}</version>
 
     <name>ShareIt Model</name>
     <url>http://maven.apache.org</url>
