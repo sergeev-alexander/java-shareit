@@ -12,13 +12,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findBy(Pageable pageable);
 
     default void checkUserById(Long userId) {
-        if (!existsById(userId)) {
+        if (!existsById(userId))
             throw new NotFoundException("There's no user with id " + userId);
-        }
     }
 
     default User getUserById(Long userId) {
-        return findById(userId).orElseThrow(() -> new NotFoundException("There's no user with id " + userId));
+        return findById(userId)
+                .orElseThrow(() -> new NotFoundException("There's no user with id " + userId));
     }
 
 }
