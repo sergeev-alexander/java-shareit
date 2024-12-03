@@ -1,2 +1,2 @@
-# java-shareit
-Template repository for Shareit project.
+# Stuff sharing app
+Educational project for sharing things among users
