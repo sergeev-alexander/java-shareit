@@ -1,10 +1,9 @@
 package ru.practicum.shareit.validation;
 
-import ru.practicum.shareit.booking.model.BookingState;
-
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.util.Arrays;
+import ru.practicum.shareit.booking.model.BookingState;
 
 public class BookingStateValidator implements ConstraintValidator<BookingStateValidation, String> {
 
